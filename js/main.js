@@ -9,6 +9,9 @@ var main = function () {
     ], function (Deferred, util, http, express, socketIO, fs) {
         var app = express();
         app.get("/", function (req, res) {
+            res.send(res.send("<h1>Hello World</h1>"));
+        });
+        app.get("/process", function (req, res) {
             res.send(util.inspect(process, { showHidden: false, depth: 2 }));
         });
 
