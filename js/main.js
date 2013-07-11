@@ -1,14 +1,15 @@
 var main = function () {
     require([
         "dojo/Deferred",
+        "dojo/node!util",
         "dojo/node!http",
         "dojo/node!express",
         "dojo/node!socket.io",
         "dojo/node!fs"
-    ], function (Deferred, http, express, socketIO, fs) {
+    ], function (Deferred, util, http, express, socketIO, fs) {
         var app = express();
         app.get("/", function (req, res) {
-            res.send("<h1>Hello World</h1>");
+            res.send(util.inspect(process, { showHidden: false, depth: 2 }));
         });
 
         var server = http.createServer(app);
