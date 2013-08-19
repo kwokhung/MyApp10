@@ -6,12 +6,6 @@ var main = function () {
     ], function (Deferred, util, express) {
         var app = express();
 
-        app.configure(function () {
-            app.use(function (req, res) {
-                res.end('<h2>Hello, your session id is ' + req.sessionID + '</h2>');
-            });
-        });
-
         app.get("/index.html", function (req, res) {
             //res.sendfile(__dirname + "/index.html");
             res.sendfile("./index.html");
