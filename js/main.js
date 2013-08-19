@@ -152,7 +152,7 @@ var main = function () {
                 //return accept("No cookie transmitted.", false);
             }
 
-            accept(null, true);
+            return accept(null, true);
         });
 
         app.io.on("connection", function (socket) {
