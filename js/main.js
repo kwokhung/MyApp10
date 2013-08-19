@@ -2,33 +2,14 @@ var main = function () {
     require([
         "dojo/Deferred",
         "dojo/node!util",
-        "dojo/node!express.io",
-        "dojo/node!edge"
-    ], function (Deferred, util, express, edge) {
+        "dojo/node!express.io"
+    ], function (Deferred, util, express) {
         var app = express();
 
         app.configure(function () {
             app.use(function (req, res) {
                 res.end('<h2>Hello, your session id is ' + req.sessionID + '</h2>');
             });
-        });
-
-        app.get("/", function (req, res) {
-            var helloWorld = edge.func("cs", function () {/*
-                async (input) => {
-                    return ".NET Welcomes " + input.ToString();
-                }
-            */});
-
-            helloWorld("node.js", function (error, result) {
-                if (error) {
-                    res.send(util.inspect(error, { showHidden: false, depth: 2 }));
-                }
-                else {
-                    res.send(result);
-                }
-            });
-
         });
 
         app.get("/index.html", function (req, res) {
