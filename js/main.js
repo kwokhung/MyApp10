@@ -30,27 +30,26 @@ var main = function () {
             })
         });
 
-        app.io.route("i am", function (req) {
+        app.io.route("i.am", function (req) {
             req.io.respond({
-                message: "'i am' accepted"
+                message: "'i.am' accepted"
             });
 
-            req.io.broadcast('he is', {
+            req.io.broadcast("he.is", {
                 who: req.data.who
             });
 
-            req.io.emit("you are", {
-                who: req.data.who,
-                message: JSON.stringify(JSON.parse(data))
+            req.io.emit("you.are", {
+                who: req.data.who
             });
         });
 
-        app.io.route("tell other", function (req) {
+        app.io.route("tell.other", function (req) {
             req.io.respond({
-                message: "'tell other' accepted"
+                message: "'tell.other' accepted"
             });
 
-            req.io.broadcast('someone said', {
+            req.io.broadcast("someone.said", {
                 what: req.data.what
             });
         });
