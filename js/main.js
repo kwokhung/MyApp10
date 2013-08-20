@@ -7,7 +7,6 @@ var main = function () {
         var app = express();
 
         app.get("/index.html", function (req, res) {
-            //res.sendfile(__dirname + "/index.html");
             res.sendfile("./index.html");
         });
 
@@ -18,21 +17,42 @@ var main = function () {
         app.http().io();
 
         app.io.set("authorization", function (handshakeData, accept) {
-            console.log("\n<<<<<authorization>>>>>\n" + util.inspect(handshakeData, { showHidden: false, depth: 2 }));
-
             return accept(null, true);
         });
 
         app.io.on("connection", function (socket) {
-            console.log("\n<<<<<connection>>>>>\n" + util.inspect(socket.handshake, { showHidden: false, depth: 2 }));
-
-            var sender = setInterval(function () {
-                socket.emit("data", new Date().getTime());
-            }, 1000)
+            var heartbeat = setInterval(function () {
+                socket.emit("heartbeat", new Date().getTime());
+            }, 60000)
 
             socket.on("disconnect", function () {
-                clearInterval(sender);
+                clearInterval(heartbeat);
             })
+        });
+
+        app.io.route("i am", function (req) {
+            req.io.respond({
+                message: "'i am' accepted"
+            });
+
+            req.io.broadcast('he is', {
+                who: req.data.who
+            });
+
+            req.io.emit("you are", {
+                who: req.data.who,
+                message: JSON.stringify(JSON.parse(data))
+            });
+        });
+
+        app.io.route("tell other", function (req) {
+            req.io.respond({
+                message: "'tell other' accepted"
+            });
+
+            req.io.broadcast('someone said', {
+                what: req.data.what
+            });
         });
 
         app.listen(process.env.PORT || 3000);
