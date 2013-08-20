@@ -2,5 +2,7 @@ set EDGE_SQL_CONNECTION_STRING=Data Source=172.21.73.11;Initial Catalog=QP_ITS;U
 
 socket.emit("i.am", { who: "" }, logMessage);
 socket.emit("tell.other", { what: "" }, logMessage);
+socket.emit("who.are.there", null, logMessage);
+
 socket.emit("nickname", "Calypso", checkNickname);
 socket.emit("user message", "Hello");

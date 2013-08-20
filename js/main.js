@@ -1,9 +1,13 @@
 var main = function () {
     require([
-        "dojo/Deferred",
         "dojo/node!util",
-        "dojo/node!express.io"
-    ], function (Deferred, util, express) {
+        "dojo/node!express.io",
+        "app/util/StoredData"
+    ], function (util, express, StoredData) {
+        var storedData = new StoredData({
+            storeLabel: "Resource"
+        });
+
         var app = express();
 
         app.get("/index.html", function (req, res) {
@@ -37,12 +41,24 @@ var main = function () {
                 message: "'i.am' accepted"
             });
 
+            storedData.store.put({ "id": req.data.who });
+
             req.io.broadcast("he.is", {
                 who: req.data.who
             });
 
             req.io.emit("you.are", {
                 who: req.data.who
+            });
+        });
+
+        app.io.route("who.are.there", function (req) {
+            req.io.respond({
+                message: "'who.are.there' accepted"
+            });
+
+            req.io.emit("they.are", {
+                who: storedData.store.query({})
             });
         });
 
