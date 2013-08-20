@@ -29,7 +29,7 @@ var main = function () {
                 socket.emit("heartbeat", {
                     time: new Date().getTime()
                 });
-            }, 10000)
+            }, 60000)
 
             socket.on("disconnect", function () {
                 clearInterval(heartbeat);
@@ -68,6 +68,7 @@ var main = function () {
             });
 
             req.io.broadcast("someone.said", {
+                who: req.data.who,
                 what: req.data.what
             });
         });
