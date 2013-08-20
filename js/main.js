@@ -22,8 +22,10 @@ var main = function () {
 
         app.io.on("connection", function (socket) {
             var heartbeat = setInterval(function () {
-                socket.emit("heartbeat", new Date().getTime());
-            }, 60000)
+                socket.emit("heartbeat", {
+                    time: new Date().getTime()
+                });
+            }, 10000)
 
             socket.on("disconnect", function () {
                 clearInterval(heartbeat);
