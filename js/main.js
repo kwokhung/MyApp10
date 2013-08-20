@@ -31,9 +31,9 @@ var main = function () {
         });
 
         app.io.route("i am", function (req) {
-            req.io.respond({
+            /*req.io.respond({
                 message: "'i am' accepted"
-            });
+            });*/
 
             req.io.broadcast('he is', {
                 who: req.data.who
@@ -46,9 +46,9 @@ var main = function () {
         });
 
         app.io.route("tell other", function (req) {
-            req.io.respond({
+            /*req.io.respond({
                 message: "'tell other' accepted"
-            });
+            });*/
 
             req.io.broadcast('someone said', {
                 what: req.data.what
