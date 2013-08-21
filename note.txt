@@ -11,3 +11,9 @@ node app.js http://localhost:3000 Brian
 node app.js http://localhost:9081 Brian
 node app.js http://172.21.72.71:9081 Brian
 node app.js http://test10atmblinus.azurewebsites.net Brian
+
+io.sockets.emit('message', {foo:bar});
+socket.emit('message', {foo:bar});
+socket.broadcast.emit('message', {foo:bar});
+socket.join('room');
+io.sockets.in('room').emit('message', {foo:bar});

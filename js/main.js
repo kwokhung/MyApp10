@@ -43,6 +43,14 @@ var main = function () {
 
             storedData.store.put({ "id": req.data.who });
 
+            req.io.join(req.data.who);
+
+            if (storedData.store.get("Resource Monitor") != null) {
+                app.io.room("Resource Monitor").broadcast("someone.joined", {
+                    who: req.data.who
+                });
+            }
+
             req.io.broadcast("he.is", {
                 who: req.data.who
             });
