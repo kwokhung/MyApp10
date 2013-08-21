@@ -1,8 +1,13 @@
 set EDGE_SQL_CONNECTION_STRING=Data Source=172.21.73.11;Initial Catalog=QP_ITS;User Id=dhs_internet;Password=d12e13;
 
 socket.emit("i.am", { who: "" }, logMessage);
-socket.emit("tell.other", { who: "", what: "" }, logMessage);
+socket.emit("tell.other", { who: "Brian", what: "How are you?" }, logMessage);
 socket.emit("who.are.there", null, logMessage);
 
 socket.emit("nickname", "Calypso", checkNickname);
 socket.emit("user message", "Hello");
+
+node app.js http://localhost:3000 Brian
+node app.js http://localhost:9081 Brian
+node app.js http://172.21.72.71:9081 Brian
+node app.js http://test10atmblinus.azurewebsites.net Brian
