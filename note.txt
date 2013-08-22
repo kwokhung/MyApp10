@@ -17,3 +17,6 @@ socket.emit('message', {foo:bar});
 socket.broadcast.emit('message', {foo:bar});
 socket.join('room');
 io.sockets.in('room').emit('message', {foo:bar});
+
+"D:\home\site\wwwroot\bin\node.exe"
+"C:\Node.Server\bin\node.exe"

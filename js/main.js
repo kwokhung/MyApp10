@@ -65,7 +65,7 @@ var main = function () {
                 message: "'who.are.there' accepted"
             });
 
-            req.io.emit("they.are", {
+            req.io.emit("there.are", {
                 who: storedData.store.query({})
             });
         });
