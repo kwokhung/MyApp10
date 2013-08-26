@@ -5,7 +5,8 @@ var main = function () {
         "app/util/StoredData"
     ], function (util, express, StoredData) {
         var storedData = new StoredData({
-            storeLabel: "Resource"
+            storeLabel: "Resource",
+            storeIdentifier: "who"
         });
 
         var app = express();
@@ -27,9 +28,9 @@ var main = function () {
         app.io.on("connection", function (socket) {
             var heartbeat = setInterval(function () {
                 socket.emit("heartbeat", {
-                    time: new Date().getTime()
+                    when: new Date().getTime()
                 });
-            }, 60000)
+            }, 1000)
 
             socket.on("disconnect", function () {
                 clearInterval(heartbeat);
@@ -41,22 +42,55 @@ var main = function () {
                 message: "'i.am' accepted"
             });
 
-            storedData.store.put({ "id": req.data.who });
+            storedData.store.put({
+                "who": req.data.who,
+                "when": req.data.when
+            });
 
             req.io.join(req.data.who);
 
             if (storedData.store.get("Resource Monitor") != null) {
                 app.io.room("Resource Monitor").broadcast("someone.joined", {
-                    who: req.data.who
+                    who: req.data.who,
+                    when: req.data.when
                 });
             }
 
             req.io.broadcast("he.is", {
-                who: req.data.who
+                who: req.data.who,
+                when: req.data.when
             });
 
             req.io.emit("you.are", {
-                who: req.data.who
+                who: req.data.who,
+                when: req.data.when
+            });
+        });
+
+        app.io.route("heartbeat", function (req) {
+            req.io.respond({
+                message: "'heartbeat' accepted"
+            });
+
+            storedData.store.get(req.data.who).when = req.data.when;
+
+            if (storedData.store.get("Resource Monitor") != null) {
+                app.io.room("Resource Monitor").broadcast("someone.beat", {
+                    who: req.data.who,
+                    when: req.data.when
+                });
+            }
+        });
+
+        app.io.route("tell.other", function (req) {
+            req.io.respond({
+                message: "'tell.other' accepted"
+            });
+
+            req.io.broadcast("someone.said", {
+                who: req.data.who,
+                what: req.data.what,
+                when: req.data.when
             });
         });
 
@@ -67,17 +101,6 @@ var main = function () {
 
             req.io.emit("there.are", {
                 who: storedData.store.query({})
-            });
-        });
-
-        app.io.route("tell.other", function (req) {
-            req.io.respond({
-                message: "'tell.other' accepted"
-            });
-
-            req.io.broadcast("someone.said", {
-                who: req.data.who,
-                what: req.data.what
             });
         });
 
