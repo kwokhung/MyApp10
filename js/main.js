@@ -30,7 +30,7 @@ var main = function () {
                 socket.emit("heartbeat", {
                     when: new Date().getTime()
                 });
-            }, 1000)
+            }, 60000)
 
             socket.on("disconnect", function () {
                 clearInterval(heartbeat);

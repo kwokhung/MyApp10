@@ -21,3 +21,5 @@ io.sockets.in('room').emit('message', {foo:bar});
 "C:\DWASFiles\Sites\test10AtMblinus\VirtualDirectory0\site\wwwroot\bin\node.exe"
 "D:\home\site\wwwroot\bin\node.exe"
 "C:\Node.Server\bin\node.exe"
+
+<button style="background-color: green;" data-dojo-type="app/widget/special/home/BtnWhoAreThere" data-dojo-mixins="app/widget/_Classless, app/widget/_WithClass" data-dojo-props="classes: 'pointer'">Who are there?</button>
