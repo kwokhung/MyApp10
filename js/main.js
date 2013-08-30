@@ -94,6 +94,20 @@ var main = function () {
             });
         });
 
+        app.io.route("tell.someone", function (req) {
+            req.io.respond({
+                message: "'tell.someone' accepted"
+            });
+
+            if (storedData.store.get(req.data.whom) != null) {
+                app.io.room(req.data.whom).broadcast("someone.said", {
+                    who: req.data.who,
+                    what: req.data.what,
+                    when: req.data.when
+                });
+            }
+        });
+
         app.io.route("who.are.there", function (req) {
             req.io.respond({
                 message: "'who.are.there' accepted"
