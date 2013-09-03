@@ -67,12 +67,41 @@ var main = function () {
             });
         });
 
+        app.io.route("i.am.no.more", function (req) {
+            req.io.respond({
+                message: "'i.am.no.more' accepted"
+            });
+
+            storedData.store.remove(req.data.who);
+
+            req.io.leave(req.data.who);
+
+            if (storedData.store.get("Resource Monitor") != null) {
+                app.io.room("Resource Monitor").broadcast("someone.left", {
+                    who: req.data.who,
+                    when: req.data.when
+                });
+            }
+
+            req.io.broadcast("he.is.no.more", {
+                who: req.data.who,
+                when: req.data.when
+            });
+
+            req.io.emit("you.are.no.more", {
+                who: req.data.who,
+                when: req.data.when
+            });
+        });
+
         app.io.route("heartbeat", function (req) {
             req.io.respond({
                 message: "'heartbeat' accepted"
             });
 
-            storedData.store.get(req.data.who).when = req.data.when;
+            if (storedData.store.get(req.data.who) != null) {
+                storedData.store.get(req.data.who).when = req.data.when;
+            }
 
             if (storedData.store.get("Resource Monitor") != null) {
                 app.io.room("Resource Monitor").broadcast("someone.beat", {
