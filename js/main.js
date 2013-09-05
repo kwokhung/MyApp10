@@ -11,6 +11,8 @@ var main = function () {
 
         var app = express();
 
+        app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
+
         app.get("/index.html", function (req, res) {
             res.sendfile("./index.html");
         });
