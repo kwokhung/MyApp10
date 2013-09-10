@@ -31,3 +31,56 @@ io.sockets.in('room').emit('message', {foo:bar});
 "C:\Node.Server\bin\node.exe"
 
 <button style="background-color: green;" data-dojo-type="app/widget/special/home/BtnWhoAreThere" data-dojo-mixins="app/widget/_Classless, app/widget/_WithClass" data-dojo-props="classes: 'pointer'">Who are there?</button>
+
+Get-WmiObject -List
+Get-WmiObject -List | Where { $_.name -match 'User'}
+Get-WmiObject -Query "Select * From Meta_Class"
+Get-WmiObject -Query "Select * From Meta_Class Where __Class Like 'Win32%'"
+Get-WmiObject -Query "Select * From Meta_Class Where __This Isa '__Event'"
+Get-WmiObject -Query "Select * From Meta_Class Where __Dynasty = 'Cim_Setting'"
+Get-WmiObject -Query "Select * From Meta_Class Where __Superclass = 'Win32_CurrentTime'"
+Get-WmiObject -Query "Select * from Win32_Account"
+Get-WmiObject -Query "Select * From Win32_Service"
+Get-WmiObject -Query "Select * From Win32_Service Where Name = 'MSSQL$SQLEXPRESS'"
+Get-WmiObject -Query "Select * From Win32_Service Where DisplayName = 'Plug and Play'"
+Get-WmiObject -Query "Select * From Win32_Service Where PathName = 'C:\\WINDOWS\\system32\\inetsrv\\inetinfo.exe'"
+Get-WmiObject -Query "Select * From Win32_Service Where Name Like 'SQL%'"
+Get-WmiObject -Query "Select * From Win32_Service Where Name > 'M' And Name < 'O'"
+Get-WmiObject -Query "Select * From Win32_Service Where ExitCode = '1077'"
+Get-WmiObject -Query "Select * from Win32_Process"
+Get-WmiObject -Query "Select * from Win32_Process Where ParentProcessId <> 884"
+Get-WmiObject -Query "Select * from Win32_Process Where ParentProcessId != 884"
+Get-WmiObject -Query "Select * from Win32_Process Where Not ParentProcessId = 884"
+Get-WmiObject -Query "Select * from Win32_Thread"
+Get-WmiObject -Query "Select * From Win32_LogicalDisk"
+Get-WmiObject -Query "Select * From Win32_LogicalDisk Where DriveType = 3"
+Get-WmiObject -Query "Select * From Win32_LogicalDisk Where DriveType = 3" | Format-List *
+Get-WmiObject -Class "Win32_ComputerSystem"
+Get-WmiObject -Class "Win32_ComputerSystem" | Format-List *
+Get-WmiObject -Class "Win32_ComputerSystem" | Format-List -Property *
+Get-WmiObject -Class "Win32_OperatingSystem" | Format-List -Property *
+Get-WmiObject -Class "Win32_ComputerSystem" | Get-Member
+(Get-WmiObject -Class Win32_ComputerSystem).Status
+Get-WmiObject -Query "Select * From __InstanceCreationEvent  Within 5 Where TargetInstance Isa 'Win32_Process' And TargetInstance.Name = 'Notepad.exe'"
+Get-WmiObject -Query "Select * From __InstanceDeletionEvent  Within 5 Where TargetInstance Isa 'Win32_Process' And TargetInstance.Name = 'Notepad.exe'"
+Get-WmiObject -Query "Select * From __InstanceModificationEvent  Within 5 Where TargetInstance Isa 'Win32_Process' And TargetInstance.Name = 'Notepad.exe'"
+Get-WmiObject -Query "Select * From __InstanceOperationEvent Within 5 Where TargetInstance Isa 'Win32_Process' And TargetInstance.Name = 'Notepad.exe'"
+Get-WmiObject -Query "Select * From Cim_DataFile Where Drive = 'C:' And Path = '\\gcap\\'"
+Get-WmiObject -Query "Associators Of {Win32_NetworkAdapter.DeviceId=1}"
+Get-WmiObject -Query "Associators Of {Win32_NetworkAdapter.DeviceId=1} Where ResultClass = Win32_NetworkAdapterConfiguration"
+Get-WmiObject -Query "Associators Of {Win32_NetworkAdapter.DeviceId=1} Where AssocClass = Win32_NetworkAdapterSetting"
+Get-WmiObject -Query "References Of {Win32_NetworkAdapter.DeviceId=1}"
+Get-WmiObject Win32_bios | Get-Member
+gwmi Win32_bios | Get-Member -MemberType property | Where { $_.name -match 'install'}
+gwmi win32_service -filter "name like 'Sql%'" | select name
+gwmi win32_service -computername WSGIT002
+gwmi win32_service -credential ggl\itdckhb -computer WSGIT002
+gwmi win32_service -filter "startmode = 'auto'" | select name, startmode
+gwmi -query "select * from win32_service where startmode = 'auto'" | select name, startmode
+gwmi win32_process -filter "name = 'svchost.exe'" | select commandline, name
+(gwmi win32_systemenclosure -computername wsgit002).SerialNumber
+gwmi win32_bios | format-list *
+gwmi Win32_ComputerSystem
+gwmi Win32_PhysicalMemory
+$appToRemove = gwmi Win32_Product -Filter "Name LIKE '%node%'"
+$appToRemove[1].Uninstall()
