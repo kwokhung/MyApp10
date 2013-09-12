@@ -1,18 +1,18 @@
 set EDGE_SQL_CONNECTION_STRING=Data Source=172.21.73.11;Initial Catalog=QP_ITS;User Id=dhs_internet;Password=d12e13;
 
-socket.emit("i.am", { who: "anonymous", whoAmI: "Brian", when: 1378177268959 }, logMessage);
+socket.emit("i.am", { who: "anonymous", whoAmI: "Brian", when: "20130912162801" }, logMessage);
 iAm({ whoAmI: "Brian" });
 
-socket.emit("i.am.no.more", { who: "Brian", whoAmI: "Brian", when: 1378177268959 }, logMessage);
+socket.emit("i.am.no.more", { who: "Brian", whoAmI: "Brian", when: "20130912162801" }, logMessage);
 iAmNoMore({ whoAmI: "Brian" });
 
-socket.emit("tell.other", { who: "Brian", what: "How are you?", when: 1378177268959 }, logMessage);
+socket.emit("tell.other", { who: "Brian", what: "How are you?", when: "20130912162801" }, logMessage);
 tellOther({ what: "How are you?" });
 
-socket.emit("tell.someone", { who: "Brian", whom: "Resource Monitor", what: "How are you?", when: 1378177268959 }, logMessage);
+socket.emit("tell.someone", { who: "Brian", whom: "Resource Monitor", what: "How are you?", when: "20130912162801" }, logMessage);
 tellSomeone({ whom: "Resource Monitor", what: "How are you?" });
 
-socket.emit("who.are.there", null, logMessage);
+socket.emit("who.are.there", { who: "Brian", when: "20130912162801" }, logMessage);
 whoAreThere();
 
 socket.emit("nickname", "Calypso", checkNickname);

@@ -187,7 +187,7 @@ var main = function () {
         app.io.route("heartbeat", function (req) {
             req.io.respond({
                 status: true,
-                message: "'heartbeat (" + req.data.who + ")' accepted"
+                message: "' (" + req.data.who + ") heartbeat' accepted"
             });
 
             if (storedData.store.get(req.data.who) != null) {
@@ -205,7 +205,7 @@ var main = function () {
         app.io.route("tell.other", function (req) {
             req.io.respond({
                 status: true,
-                message: "'tell.other' accepted"
+                message: "' (" + req.data.who + ") tell.other' accepted"
             });
 
             req.io.broadcast("someone.said", {
@@ -219,13 +219,13 @@ var main = function () {
             if (storedData.store.get(req.data.whom) == null) {
                 req.io.respond({
                     status: false,
-                    message: "'tell.someone (" + req.data.whom + ")' not accepted"
+                    message: "' (" + req.data.who + ") tell.someone (" + req.data.whom + ")' not accepted"
                 });
             }
             else {
                 req.io.respond({
                     status: true,
-                    message: "'tell.someone (" + req.data.whom + ")' accepted"
+                    message: "' (" + req.data.who + ") tell.someone (" + req.data.whom + ")' accepted"
                 });
 
                 app.io.room(req.data.whom).broadcast("someone.said", {
@@ -239,7 +239,7 @@ var main = function () {
         app.io.route("who.are.there", function (req) {
             req.io.respond({
                 status: true,
-                message: "'who.are.there' accepted"
+                message: "' (" + req.data.who + ") who.are.there' accepted"
             });
 
             req.io.emit("there.are", {
