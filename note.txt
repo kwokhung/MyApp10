@@ -1,10 +1,10 @@
 set EDGE_SQL_CONNECTION_STRING=Data Source=172.21.73.11;Initial Catalog=QP_ITS;User Id=dhs_internet;Password=d12e13;
 
-socket.emit("i.am", { who: "Brian", when: 1378177268959 }, logMessage);
-iAm({ who: "Brian" });
+socket.emit("i.am", { who: "anonymous", whoAmI: "Brian", when: 1378177268959 }, logMessage);
+iAm({ whoAmI: "Brian" });
 
-socket.emit("i.am.no.more", { who: "Brian", when: 1378177268959 }, logMessage);
-iAmNoMore({ who: "Brian" });
+socket.emit("i.am.no.more", { who: "Brian", whoAmI: "Brian", when: 1378177268959 }, logMessage);
+iAmNoMore({ whoAmI: "Brian" });
 
 socket.emit("tell.other", { who: "Brian", what: "How are you?", when: 1378177268959 }, logMessage);
 tellOther({ what: "How are you?" });
