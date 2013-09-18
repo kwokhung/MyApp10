@@ -20,9 +20,9 @@ socket.emit("user message", "Hello");
 
 node app.js http://localhost:3000 Brian
 node app.js http://localhost:9081 Brian
-node app.js http://172.21.72.71:3000 Brian
+node app.js http://172.21.72.71:3000 WSGIT002
 node app.js http://172.21.72.71:9081 Brian
-node app.js http://test10atmblinus.azurewebsites.net Brian
+node app.js http://test10atmblinus.azurewebsites.net WSGIT002
 
 io.sockets.emit('message', {foo:bar});
 socket.emit('message', {foo:bar});
