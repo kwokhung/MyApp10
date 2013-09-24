@@ -93,6 +93,16 @@ var main = function () {
 
         app.http().io();
 
+        app.io.configure(function () {
+            app.io.set("transports", [
+                //"websocket",
+                //"flashsocket",
+                "htmlfile",
+                "xhr-polling",
+                "jsonp-polling"
+            ]);
+        });
+
         app.io.set("authorization", function (handshakeData, accept) {
             return accept(null, true);
         });
@@ -113,13 +123,13 @@ var main = function () {
             if (storedData.store.get(req.data.whoAmI) != null) {
                 req.io.respond({
                     status: false,
-                    message: "' (" + req.data.who + ") i.am (" + req.data.whoAmI + ")' not accepted"
+                    message: "'(" + req.data.who + ") i.am (" + req.data.whoAmI + ")' not accepted"
                 });
             }
             else {
                 req.io.respond({
                     status: true,
-                    message: "' (" + req.data.who + ") i.am (" + req.data.whoAmI + ")' accepted"
+                    message: "'(" + req.data.who + ") i.am (" + req.data.whoAmI + ")' accepted"
                 });
 
                 storedData.store.put({
@@ -152,13 +162,13 @@ var main = function () {
             if (storedData.store.get(req.data.whoAmI) == null) {
                 req.io.respond({
                     status: false,
-                    message: "' (" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' not accepted"
+                    message: "'(" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' not accepted"
                 });
             }
             else {
                 req.io.respond({
                     status: true,
-                    message: "' (" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' accepted"
+                    message: "'(" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' accepted"
                 });
 
                 storedData.store.remove(req.data.whoAmI);
@@ -187,7 +197,7 @@ var main = function () {
         app.io.route("heartbeat", function (req) {
             req.io.respond({
                 status: true,
-                message: "' (" + req.data.who + ") heartbeat' accepted"
+                message: "'(" + req.data.who + ") heartbeat' accepted"
             });
 
             if (storedData.store.get(req.data.who) != null) {
@@ -205,7 +215,7 @@ var main = function () {
         app.io.route("tell.other", function (req) {
             req.io.respond({
                 status: true,
-                message: "' (" + req.data.who + ") tell.other' accepted"
+                message: "'(" + req.data.who + ") tell.other' accepted"
             });
 
             req.io.broadcast("someone.said", {
@@ -219,13 +229,13 @@ var main = function () {
             if (storedData.store.get(req.data.whom) == null) {
                 req.io.respond({
                     status: false,
-                    message: "' (" + req.data.who + ") tell.someone (" + req.data.whom + ")' not accepted"
+                    message: "'(" + req.data.who + ") tell.someone (" + req.data.whom + ")' not accepted"
                 });
             }
             else {
                 req.io.respond({
                     status: true,
-                    message: "' (" + req.data.who + ") tell.someone (" + req.data.whom + ")' accepted"
+                    message: "'(" + req.data.who + ") tell.someone (" + req.data.whom + ")' accepted"
                 });
 
                 app.io.room(req.data.whom).broadcast("someone.said", {
@@ -239,7 +249,7 @@ var main = function () {
         app.io.route("who.are.there", function (req) {
             req.io.respond({
                 status: true,
-                message: "' (" + req.data.who + ") who.are.there' accepted"
+                message: "'(" + req.data.who + ") who.are.there' accepted"
             });
 
             req.io.emit("there.are", {
