@@ -95,8 +95,8 @@ var main = function () {
 
         app.io.configure(function () {
             app.io.set("transports", [
-                //"websocket",
-                //"flashsocket",
+                "websocket",
+                "flashsocket",
                 "htmlfile",
                 "xhr-polling",
                 "jsonp-polling"
