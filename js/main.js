@@ -71,11 +71,12 @@ Number.prototype.dateFormat = function () {
 var main = function () {
     require([
         "dojo/node!crypto",
+        "dojo/node!connect",
         "dojo/node!util",
         "dojo/node!xml2js",
         "dojo/node!express.io",
         "app/util/StoredData"
-    ], function (crypto, util, xml2js, express, StoredData) {
+    ], function (crypto, connect, util, xml2js, express, StoredData) {
         var storedData = new StoredData({
             storeLabel: "Resource",
             storeIdentifier: "who"
@@ -84,6 +85,43 @@ var main = function () {
         var app = express();
 
         app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
+
+        app.use("/wechat", function (req, res, next) {
+            if (req.method != "POST") {
+                return next();
+            }
+
+            /*if (connect.utils.mime(req) != "text/xml") {
+                return next();
+            }*/
+
+            if (req._body) {
+                return next();
+            }
+
+            req.body = req.body || {};
+            req._body = true;
+
+            var requestDataXml = "";
+
+            req.setEncoding("utf8");
+
+            req.on("data", function (data) {
+                requestDataXml += data;
+            });
+
+            req.on("end", function () {
+                xml2js.parseString(requestDataXml, { trim: true }, function (error, requestDataJson) {
+                    if (error) {
+                        error.status = 400;
+                        next(error);
+                    } else {
+                        req.body = requestDataJson;
+                        next();
+                    }
+                });
+            });
+        });
 
         app.get("/index.html", function (req, res) {
             res.sendfile("./index.html");
@@ -114,7 +152,7 @@ var main = function () {
                 req.query.timestamp,
                 req.query.nonce
             ].sort().join("")).digest("hex") == req.query.signature) {
-                var requestDataXml = "";
+                /*var requestDataXml = "";
 
                 req.setEncoding("utf8");
 
@@ -132,16 +170,27 @@ var main = function () {
 
                             res.type("xml");
                             res.send(
-                               "<xml>" +
-                                     "<ToUserName><![CDATA[" + "Brian" + "]]></ToUserName>" +
-                                     "<FromUserName><![CDATA[" + "webot" + "]]></FromUserName>" +
-                                     "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
-                                     "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                                     "<Content><![CDATA[" + "echo: hello" + "]]></Content>" +
+                                "<xml>" +
+                                    "<ToUserName><![CDATA[" + requestDataJson.xml.FromUserName + "]]></ToUserName>" +
+                                    "<FromUserName><![CDATA[" + requestDataJson.xml.ToUserName + "]]></FromUserName>" +
+                                    "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
+                                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                                    "<Content><![CDATA[<<" + requestDataJson.xml.Content + ">>]]></Content>" +
                                 "</xml>");
                         }
                     });
-                });
+                });*/
+                console.log(util.inspect(req.body, false, null));
+
+                res.type("xml");
+                res.send(
+                    "<xml>" +
+                        "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                        "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                        "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
+                        "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                        "<Content><![CDATA[<<" + req.body.xml.Content + ">>]]></Content>" +
+                    "</xml>");
             }
             else {
                 res.writeHead(401);
