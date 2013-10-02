@@ -30,6 +30,28 @@ socket.broadcast.emit('message', {foo:bar});
 socket.join('room');
 io.sockets.in('room').emit('message', {foo:bar});
 
+cd C:\Projects\webot-example-master
+npm install
+set DEBUG=webot-example:*
+npm start
+
+http://localhost:3000/wechat?signature=d8284f4387bb120df2d02a8e474a896568cc824d&timestamp=1380264857354&nonce=92940819845&echostr=echostr_24439890868
+
+webot help menu
+webot send t hello --des http://localhost:3000/wechat --token keyboardcat123
+webot send t hello --des http://localhost:3000/wechat --token keyboardcat123 --user Brian
+webot send text --host localhost --port 3000 --route /wechat --token keyboardcat123 --user Brian hello
+webot send text --route /wechat --token keyboardcat123 --user Brian hello
+webot send image --route /wechat --token keyboardcat123 --user Brian https://github.com/fluidicon.png
+webot send location --route /wechat --token keyboardcat123 --user Brian 20.12 120.33 "Somewhere Out There"
+webot send event --route /wechat --token keyboardcat123 --user Brian subscribe
+webot send loc 20.12 120.33 "Somewhere Out There" --des http://localhost:3000/wechat --token keyboardcat123
+webot menu create --config ./wx_config.json < ./wx_menu.json
+
+cd C:\Projects\webot-cli-master
+node bin\webot send text --host localhost --port 3000 --route /wechat --token keyboardcat123 --user Brian hello
+node bin\webot send text --host test04atmblinus.azurewebsites.net --port 80 --route /wechat --token keyboardcat123 --user Brian hello
+
 "C:\DWASFiles\Sites\test10AtMblinus\VirtualDirectory0\site\wwwroot\bin\node.exe"
 "D:\home\site\wwwroot\bin\node.exe"
 "C:\Node.Server\bin\node.exe"
