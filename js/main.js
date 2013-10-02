@@ -75,53 +75,21 @@ var main = function () {
         "dojo/node!util",
         "dojo/node!xml2js",
         "dojo/node!express.io",
-        "app/util/StoredData"
-    ], function (crypto, connect, util, xml2js, express, StoredData) {
+        "app/util/StoredData",
+        "app/util/WechatHelper"
+    ], function (crypto, connect, util, xml2js, express, StoredData, WechatHelper) {
         var storedData = new StoredData({
             storeLabel: "Resource",
             storeIdentifier: "who"
         });
 
+        var wechatHelper = new WechatHelper();
+
         var app = express();
 
         app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
 
-        app.use("/wechat", function (req, res, next) {
-            if (req.method != "POST") {
-                return next();
-            }
-
-            /*if (connect.utils.mime(req) != "text/xml") {
-                return next();
-            }*/
-
-            if (req._body) {
-                return next();
-            }
-
-            req.body = req.body || {};
-            req._body = true;
-
-            var requestDataXml = "";
-
-            req.setEncoding("utf8");
-
-            req.on("data", function (data) {
-                requestDataXml += data;
-            });
-
-            req.on("end", function () {
-                xml2js.parseString(requestDataXml, { trim: true }, function (error, requestDataJson) {
-                    if (error) {
-                        error.status = 400;
-                        next(error);
-                    } else {
-                        req.body = requestDataJson;
-                        next();
-                    }
-                });
-            });
-        });
+        app.use("/wechat", wechatHelper.xmlParse);
 
         app.get("/index.html", function (req, res) {
             res.sendfile("./index.html");
@@ -152,34 +120,6 @@ var main = function () {
                 req.query.timestamp,
                 req.query.nonce
             ].sort().join("")).digest("hex") == req.query.signature) {
-                /*var requestDataXml = "";
-
-                req.setEncoding("utf8");
-
-                req.on("data", function (data) {
-                    requestDataXml += data;
-                });
-
-                req.on("end", function () {
-                    xml2js.parseString(requestDataXml, { trim: true }, function (error, requestDataJson) {
-                        if (error) {
-                            res.writeHead(401);
-                            res.end(util.inspect(error, { showHidden: false, depth: 2 }));
-                        } else {
-                            console.log(util.inspect(requestDataJson, false, null));
-
-                            res.type("xml");
-                            res.send(
-                                "<xml>" +
-                                    "<ToUserName><![CDATA[" + requestDataJson.xml.FromUserName + "]]></ToUserName>" +
-                                    "<FromUserName><![CDATA[" + requestDataJson.xml.ToUserName + "]]></FromUserName>" +
-                                    "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
-                                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                                    "<Content><![CDATA[<<" + requestDataJson.xml.Content + ">>]]></Content>" +
-                                "</xml>");
-                        }
-                    });
-                });*/
                 console.log(util.inspect(req.body, false, null));
 
                 res.type("xml");
