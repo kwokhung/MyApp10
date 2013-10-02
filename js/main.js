@@ -70,10 +70,12 @@ Number.prototype.dateFormat = function () {
 
 var main = function () {
     require([
+        "dojo/node!crypto",
         "dojo/node!util",
+        "dojo/node!xml2js",
         "dojo/node!express.io",
         "app/util/StoredData"
-    ], function (util, express, StoredData) {
+    ], function (crypto, util, xml2js, express, StoredData) {
         var storedData = new StoredData({
             storeLabel: "Resource",
             storeIdentifier: "who"
@@ -89,6 +91,62 @@ var main = function () {
 
         app.get("/process", function (req, res) {
             res.send(util.inspect(process, { showHidden: false, depth: 2 }));
+        });
+
+        app.get("/wechat", function (req, res) {
+            if (crypto.createHash("sha1").update([
+                "keyboardcat123",
+                req.query.timestamp,
+                req.query.nonce
+            ].sort().join("")).digest("hex") == req.query.signature) {
+                res.writeHead(200);
+                res.end(req.query.echostr);
+            }
+            else {
+                res.writeHead(401);
+                res.end("Signature is invalid");
+            };
+        });
+
+        app.post("/wechat", function (req, res) {
+            if (crypto.createHash("sha1").update([
+                "keyboardcat123",
+                req.query.timestamp,
+                req.query.nonce
+            ].sort().join("")).digest("hex") == req.query.signature) {
+                var requestDataXml = "";
+
+                req.setEncoding("utf8");
+
+                req.on("data", function (data) {
+                    requestDataXml += data;
+                });
+
+                req.on("end", function () {
+                    xml2js.parseString(requestDataXml, { trim: true }, function (error, requestDataJson) {
+                        if (error) {
+                            res.writeHead(401);
+                            res.end(util.inspect(error, { showHidden: false, depth: 2 }));
+                        } else {
+                            console.log(util.inspect(requestDataJson, false, null));
+
+                            res.type("xml");
+                            res.send(
+                               "<xml>" +
+                                     "<ToUserName><![CDATA[" + "Brian" + "]]></ToUserName>" +
+                                     "<FromUserName><![CDATA[" + "webot" + "]]></FromUserName>" +
+                                     "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
+                                     "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                                     "<Content><![CDATA[" + "echo: hello" + "]]></Content>" +
+                                "</xml>");
+                        }
+                    });
+                });
+            }
+            else {
+                res.writeHead(401);
+                res.end("Signature is invalid");
+            };
         });
 
         app.http().io();

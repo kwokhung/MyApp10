@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "My App 10",
   "dependencies": {
-    "express": "3.x",
+    "xml2js": "*",
+    "express": "*",
     "socket.io": "*",
     "express.io": "1.x"
   }
