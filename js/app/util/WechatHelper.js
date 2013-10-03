@@ -134,8 +134,8 @@ define([
                                 "From User: ${FromUserName}\n\n" +
                                 "To User: ${ToUserName}\n\n" +
                                 "Content: ${Content}\n\n" +
-                                "Profile 1: <a href='${Profile1}'>Link</a>\n\n" +
-                                "Profile 2: <a href='${Profile2}'>Link</a>\n\n" +
+                                "Profile 1: <a href=\"${Profile1}\">Link</a>\n\n" +
+                                "Profile 2: <a href=\"${Profile2}\">Link</a>\n\n" +
                                 "Raw Data: ${RawData}",
                                 {
                                     CurrentTime: currentTime.dateFormat(),
