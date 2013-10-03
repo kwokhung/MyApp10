@@ -91,9 +91,8 @@ define([
                                 /*"<" +
                                 req.body.xml.MsgId + "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() + "@" + (new Date().getTime()).dateFormat() + "+" + (new Date().getTimezoneOffset()).toString() + ">:<" + req.body.xml.FromUserName + "(" + req.body.xml.Content + ")" + req.body.xml.ToUserName +
                                 ">" +*/
-                                "<h1>abc</h1>" +
-                                "<br />" +
-                                "<span>abc</span>" +
+                                "abc\n" +
+                                "def" +
                             "]]>" +
                         "</Content>" +
                     "</xml>");
