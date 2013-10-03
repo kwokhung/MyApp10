@@ -70,26 +70,26 @@ Number.prototype.dateFormat = function () {
 
 var main = function () {
     require([
-        "dojo/node!crypto",
-        "dojo/node!connect",
+        "dojo/_base/lang",
         "dojo/node!util",
-        "dojo/node!xml2js",
         "dojo/node!express.io",
         "app/util/StoredData",
         "app/util/WechatHelper"
-    ], function (crypto, connect, util, xml2js, express, StoredData, WechatHelper) {
+    ], function (lang, util, express, StoredData, WechatHelper) {
         var storedData = new StoredData({
             storeLabel: "Resource",
             storeIdentifier: "who"
         });
 
-        var wechatHelper = new WechatHelper();
+        var wechatHelper = new WechatHelper({
+            token: "LivingStrategy"
+        });
 
         var app = express();
 
         app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
 
-        app.use("/wechat", wechatHelper.xmlParse);
+        app.use("/wechat", lang.hitch(wechatHelper, wechatHelper.parseBody));
 
         app.get("/index.html", function (req, res) {
             res.sendfile("./index.html");
@@ -99,44 +99,9 @@ var main = function () {
             res.send(util.inspect(process, { showHidden: false, depth: 2 }));
         });
 
-        app.get("/wechat", function (req, res) {
-            if (crypto.createHash("sha1").update([
-                "keyboardcat123",
-                req.query.timestamp,
-                req.query.nonce
-            ].sort().join("")).digest("hex") == req.query.signature) {
-                res.writeHead(200);
-                res.end(req.query.echostr);
-            }
-            else {
-                res.writeHead(401);
-                res.end("Signature is invalid");
-            };
-        });
+        app.get("/wechat", lang.hitch(wechatHelper, wechatHelper.handleGet));
 
-        app.post("/wechat", function (req, res) {
-            if (crypto.createHash("sha1").update([
-                "keyboardcat123",
-                req.query.timestamp,
-                req.query.nonce
-            ].sort().join("")).digest("hex") == req.query.signature) {
-                console.log(util.inspect(req.body, false, null));
-
-                res.type("xml");
-                res.send(
-                    "<xml>" +
-                        "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                        "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                        "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
-                        "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                        "<Content><![CDATA[<<" + req.body.xml.Content + ">>]]></Content>" +
-                    "</xml>");
-            }
-            else {
-                res.writeHead(401);
-                res.end("Signature is invalid");
-            };
-        });
+        app.post("/wechat", lang.hitch(wechatHelper, wechatHelper.handlePost));
 
         app.http().io();
 
