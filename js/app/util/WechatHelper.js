@@ -86,7 +86,16 @@ define([
                         "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
                         "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
                         "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
-                        "<Content><![CDATA[<" + req.body.xml.MsgId + "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() + "@" + (new Date().getTime()).dateFormat() + "+" + (new Date().getTimezoneOffset()).toString() + ">:<" + req.body.xml.FromUserName + "(" + req.body.xml.Content + ")" + req.body.xml.ToUserName + ">]]></Content>" +
+                        "<Content>" +
+                            "<![CDATA[" +
+                                /*"<" +
+                                req.body.xml.MsgId + "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() + "@" + (new Date().getTime()).dateFormat() + "+" + (new Date().getTimezoneOffset()).toString() + ">:<" + req.body.xml.FromUserName + "(" + req.body.xml.Content + ")" + req.body.xml.ToUserName +
+                                ">" +*/
+                                "<h1>abc</h1>" +
+                                "<br />" +
+                                "<span>abc</span>" +
+                            "]]>" +
+                        "</Content>" +
                     "</xml>");
             }
             else {
