@@ -49,20 +49,20 @@ define([
             });
         },
         checkSignature: function (req) {
-            console.log(this.token);
-            console.log(req.query.timestamp);
-            console.log(req.query.nonce);
-            console.log(req.query.signature);
+            //console.log(this.token);
+            //console.log(req.query.timestamp);
+            //console.log(req.query.nonce);
+            //console.log(req.query.signature);
             if (crypto.createHash("sha1").update([
                 this.token,
                 req.query.timestamp,
                 req.query.nonce
             ].sort().join("")).digest("hex") == req.query.signature) {
-                console.log("true");
+                //console.log("true");
                 return true;
             }
             else {
-                console.log("false");
+                //console.log("false");
                 return false;
             }
         },
@@ -88,6 +88,11 @@ define([
 
                     case "image":
                         this.handleImage(req, res);
+
+                        break;
+
+                    case "location":
+                        this.handleLocation(req, res);
 
                         break;
 
@@ -186,6 +191,56 @@ define([
                                     ToUserName: req.body.xml.ToUserName[0],
                                     PicUrl: req.body.xml.PicUrl[0],
                                     MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
+                                    RawData: util.inspect(req.body, false, null)
+                                }) +
+                        "]]>" +
+                    "</Content>" +
+                "</xml>");
+        },
+        handleLocation: function (req, res) {
+            var currentDate = new Date();
+            var currentTime = currentDate.getTime();
+            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+
+            var hkDate = currentDate;
+            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+
+            res.send(
+                "<xml>" +
+                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
+                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                    "<Content>" +
+                        "<![CDATA[" +
+                            string.substitute(
+                                "\n" +
+                                "Current Time: ${CurrentTime}\n\n" +
+                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                                "HK Time: ${HkTime}\n\n" +
+                                "Message Id: ${MsgId}\n\n" +
+                                "Message type: ${MsgType}\n\n" +
+                                "Create Time: ${CreateTime}\n\n" +
+                                "From User: ${FromUserName}\n\n" +
+                                "To User: ${ToUserName}\n\n" +
+                                "Location X: ${Location_X}\n\n" +
+                                "Location Y: ${Location_Y}\n\n" +
+                                "Scale: ${Scale}\n\n" +
+                                "Label: ${Label}\n\n" +
+                                "Raw Data: ${RawData}",
+                                {
+                                    CurrentTime: currentTime.dateFormat(),
+                                    CurrentTimeZone: currentTimeZone,
+                                    HkTime: hkDate.getTime().dateFormat(),
+                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                                    MsgType: req.body.xml.MsgType[0],
+                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                                    FromUserName: req.body.xml.FromUserName[0],
+                                    ToUserName: req.body.xml.ToUserName[0],
+                                    Location_X: req.body.xml.Location_X[0],
+                                    Location_Y: req.body.xml.Location_Y[0],
+                                    Scale: req.body.xml.Scale[0],
+                                    Label: req.body.xml.Label[0],
                                     RawData: util.inspect(req.body, false, null)
                                 }) +
                         "]]>" +
