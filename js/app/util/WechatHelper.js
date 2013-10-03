@@ -64,7 +64,7 @@ define([
             else {
                 console.log("false");
                 return false;
-            };
+            }
         },
         handleGet: function (req, res) {
             if (this.checkSignature(req) == true) {
@@ -74,68 +74,104 @@ define([
             else {
                 res.writeHead(401);
                 res.end("Signature is invalid");
-            };
+            }
         },
         handlePost: function (req, res) {
             if (this.checkSignature(req) == true) {
-                console.log(util.inspect(req.body, false, null));
-
-                var currentDate = new Date();
-                var currentTime = currentDate.getTime();
-                var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-                var hkDate = currentDate;
-                hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
                 res.type("xml");
-                res.send(
-                    "<xml>" +
-                        "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                        "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                        "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                        "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
-                        "<Content>" +
-                            "<![CDATA[" +
-                                /*"<" +
-                                req.body.xml.MsgId +
-                                "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() +
-                                "@" + (new Date().getTime()).dateFormat() +
-                                "+" + (new Date().getTimezoneOffset()).toString() +
-                                ">:<" + req.body.xml.FromUserName +
-                                "(" + req.body.xml.Content + ")" +
-                                req.body.xml.ToUserName +
-                                ">" +*/
-                                string.substitute(
-                                    "\n" +
-                                    "Current Time: ${CurrentTime}\n\n" +
-                                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                    "HK Time: ${HkTime}\n\n" +
-                                    "Message Id: ${MsgId}\n\n" +
-                                    "Message type: ${MsgType}\n\n" +
-                                    "Create Time: ${CreateTime}\n\n" +
-                                    "From User: ${FromUserName}\n\n" +
-                                    "To User: ${ToUserName}\n\n" +
-                                    "Content: ${Content}\n\n" +
-                                    "Raw Data: ${RawData}",
-                                    {
-                                        CurrentTime: currentTime.dateFormat(),
-                                        CurrentTimeZone: currentTimeZone,
-                                        HkTime: hkDate.getTime().dateFormat(),
-                                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId),
-                                        MsgType: req.body.xml.MsgType,
-                                        CreateTime: (parseInt(req.body.xml.CreateTime) * 1000).dateFormat(),
-                                        FromUserName: req.body.xml.FromUserName,
-                                        ToUserName: req.body.xml.ToUserName,
-                                        Content: req.body.xml.Content,
-                                        RawData: util.inspect(req.body, false, null)
-                                    }) +
-                            "]]>" +
-                        "</Content>" +
-                    "</xml>");
+
+                switch (req.body.xml.MsgType[0].toLowerCase()) {
+                    case "text":
+                        this.handleText(req, res);
+
+                        break;
+
+                    default:
+                        this.handleOther(req, res);
+
+                        break;
+                }
             }
             else {
                 res.writeHead(401);
                 res.end("Signature is invalid");
-            };
-        }
-    });
+            }
+        },
+        handleText: function (req, res) {
+            var currentDate = new Date();
+            var currentTime = currentDate.getTime();
+            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+
+            var hkDate = currentDate;
+            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+
+            res.send(
+                "<xml>" +
+                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
+                    "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
+                    "<Content>" +
+                        "<![CDATA[" +
+                            string.substitute(
+                                "\n" +
+                                "Current Time: ${CurrentTime}\n\n" +
+                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                                "HK Time: ${HkTime}\n\n" +
+                                "Message Id: ${MsgId}\n\n" +
+                                "Message type: ${MsgType}\n\n" +
+                                "Create Time: ${CreateTime}\n\n" +
+                                "From User: ${FromUserName}\n\n" +
+                                "To User: ${ToUserName}\n\n" +
+                                "Content: ${Content}\n\n" +
+                                "Raw Data: ${RawData}",
+                                {
+                                    CurrentTime: currentTime.dateFormat(),
+                                    CurrentTimeZone: currentTimeZone,
+                                    HkTime: hkDate.getTime().dateFormat(),
+                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                                    MsgType: req.body.xml.MsgType[0],
+                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                                    FromUserName: req.body.xml.FromUserName[0],
+                                    ToUserName: req.body.xml.ToUserName[0],
+                                    Content: req.body.xml.Content[0],
+                                    RawData: util.inspect(req.body, false, null)
+                                }) +
+                        "]]>" +
+                    "</Content>" +
+                "</xml>");
+        },
+        handleOther: function (req, res) {
+        var currentDate = new Date();
+        var currentTime = currentDate.getTime();
+        var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+
+        var hkDate = currentDate;
+        hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+
+        res.send(
+            "<xml>" +
+                "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
+                "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
+                "<Content>" +
+                    "<![CDATA[" +
+                        string.substitute(
+                            "\n" +
+                            "Current Time: ${CurrentTime}\n\n" +
+                            "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                            "HK Time: ${HkTime}\n\n" +
+                            "Raw Data: ${RawData}",
+                            {
+                                CurrentTime: currentTime.dateFormat(),
+                                CurrentTimeZone: currentTimeZone,
+                                HkTime: hkDate.getTime().dateFormat(),
+                                RawData: util.inspect(req.body, false, null)
+                            }) +
+                    "]]>" +
+                "</Content>" +
+            "</xml>");
+    }
+});
 });
