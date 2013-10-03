@@ -80,12 +80,18 @@ define([
             if (this.checkSignature(req) == true) {
                 console.log(util.inspect(req.body, false, null));
 
+                var currentDate = new Date();
+                var currentTime = currentDate.getTime();
+                var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+                var hkDate = currentDate;
+                hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+
                 res.type("xml");
                 res.send(
                     "<xml>" +
                         "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
                         "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                        "<CreateTime>" + Math.round(new Date().getTime() / 1000) + "</CreateTime>" +
+                        "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
                         "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
                         "<Content>" +
                             "<![CDATA[" +
@@ -99,14 +105,21 @@ define([
                                 req.body.xml.ToUserName +
                                 ">" +*/
                                 string.substitute(
-                                    "Message Id: ${MsgId}\n" +
-                                    "Message type: ${MsgType}\n" +
-                                    "Create Time: ${CreateTime}\n" +
-                                    "From User: ${FromUserName}\n" +
-                                    "To User: ${ToUserName}\n" +
-                                    "Content: ${Content}\n" +
+                                    "\n" +
+                                    "Current Time: ${CurrentTime}\n\n" +
+                                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                                    "HK Time: ${HkTime}\n\n" +
+                                    "Message Id: ${MsgId}\n\n" +
+                                    "Message type: ${MsgType}\n\n" +
+                                    "Create Time: ${CreateTime}\n\n" +
+                                    "From User: ${FromUserName}\n\n" +
+                                    "To User: ${ToUserName}\n\n" +
+                                    "Content: ${Content}\n\n" +
                                     "Raw Data: ${RawData}",
                                     {
+                                        CurrentTime: currentTime.dateFormat(),
+                                        CurrentTimeZone: currentTimeZone,
+                                        HkTime: hkDate.getTime().dateFormat(),
                                         MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId),
                                         MsgType: req.body.xml.MsgType,
                                         CreateTime: (parseInt(req.body.xml.CreateTime) * 1000).dateFormat(),
