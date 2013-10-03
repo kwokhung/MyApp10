@@ -150,7 +150,7 @@ define([
                                     Content: req.body.xml.Content[0],
                                     //Profile1: "http://www.weixin/profile/gh_bf4a62d67399",
                                     //Profile2: "weixin://profile/gh_bf4a62d67399",
-                                    Link: "http://www.guococom.com",
+                                    Link: "http://ancient.com",
                                     RawData: util.inspect(req.body, false, null)
                                 }) +
                         "]]>" +
