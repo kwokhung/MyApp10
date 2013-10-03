@@ -1,11 +1,12 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/string",
     "dojo/node!util",
     "dojo/node!crypto",
     "dojo/node!connect",
     "dojo/node!xml2js"
-], function (declare, lang, util, crypto, connect, xml2js) {
+], function (declare, lang, string, util, crypto, connect, xml2js) {
     return declare("app.util.WechatHelper", null, {
         token: null,
         constructor: function (kwArgs) {
@@ -89,10 +90,31 @@ define([
                         "<Content>" +
                             "<![CDATA[" +
                                 /*"<" +
-                                req.body.xml.MsgId + "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() + "@" + (new Date().getTime()).dateFormat() + "+" + (new Date().getTimezoneOffset()).toString() + ">:<" + req.body.xml.FromUserName + "(" + req.body.xml.Content + ")" + req.body.xml.ToUserName +
+                                req.body.xml.MsgId +
+                                "@" + (parseInt(req.body.xml.CreateTime) * 1000).dateFormat() +
+                                "@" + (new Date().getTime()).dateFormat() +
+                                "+" + (new Date().getTimezoneOffset()).toString() +
+                                ">:<" + req.body.xml.FromUserName +
+                                "(" + req.body.xml.Content + ")" +
+                                req.body.xml.ToUserName +
                                 ">" +*/
-                                "abc\n" +
-                                "def" +
+                                string.substitute(
+                                    "Message Id: ${MsgId}\n" +
+                                    "Message type: ${MsgType}\n" +
+                                    "Create Time: ${CreateTime}\n" +
+                                    "From User: ${FromUserName}\n" +
+                                    "To User: ${ToUserName}\n" +
+                                    "Content: ${Content}\n" +
+                                    "Raw Data: ${RawData}",
+                                    {
+                                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId),
+                                        MsgType: req.body.xml.MsgType,
+                                        CreateTime: (parseInt(req.body.xml.CreateTime) * 1000).dateFormat(),
+                                        FromUserName: req.body.xml.FromUserName,
+                                        ToUserName: req.body.xml.ToUserName,
+                                        Content: req.body.xml.Content,
+                                        RawData: util.inspect(req.body, false, null)
+                                    }) +
                             "]]>" +
                         "</Content>" +
                     "</xml>");
