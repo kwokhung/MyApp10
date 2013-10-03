@@ -142,36 +142,36 @@ define([
                 "</xml>");
         },
         handleOther: function (req, res) {
-        var currentDate = new Date();
-        var currentTime = currentDate.getTime();
-        var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+            var currentDate = new Date();
+            var currentTime = currentDate.getTime();
+            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
 
-        var hkDate = currentDate;
-        hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+            var hkDate = currentDate;
+            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
 
-        res.send(
-            "<xml>" +
-                "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
-                "<Content>" +
-                    "<![CDATA[" +
-                        string.substitute(
-                            "\n" +
-                            "Current Time: ${CurrentTime}\n\n" +
-                            "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                            "HK Time: ${HkTime}\n\n" +
-                            "Raw Data: ${RawData}",
-                            {
-                                CurrentTime: currentTime.dateFormat(),
-                                CurrentTimeZone: currentTimeZone,
-                                HkTime: hkDate.getTime().dateFormat(),
-                                RawData: util.inspect(req.body, false, null)
-                            }) +
-                    "]]>" +
-                "</Content>" +
-            "</xml>");
-    }
-});
+            res.send(
+                "<xml>" +
+                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
+                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                    "<Content>" +
+                        "<![CDATA[" +
+                            string.substitute(
+                                "\n" +
+                                "Current Time: ${CurrentTime}\n\n" +
+                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                                "HK Time: ${HkTime}\n\n" +
+                                "Raw Data: ${RawData}",
+                                {
+                                    CurrentTime: currentTime.dateFormat(),
+                                    CurrentTimeZone: currentTimeZone,
+                                    HkTime: hkDate.getTime().dateFormat(),
+                                    RawData: util.inspect(req.body, false, null)
+                                }) +
+                        "]]>" +
+                    "</Content>" +
+                "</xml>");
+        }
+    });
 });
