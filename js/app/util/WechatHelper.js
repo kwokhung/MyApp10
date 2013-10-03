@@ -134,6 +134,8 @@ define([
                                 "From User: ${FromUserName}\n\n" +
                                 "To User: ${ToUserName}\n\n" +
                                 "Content: ${Content}\n\n" +
+                                "Profile 1: http://www.weixin/profile/gh_bf4a62d67399\n\n" +
+                                "Profile 2: weixin://profile/gh_bf4a62d67399\n\n" +
                                 "Raw Data: ${RawData}",
                                 {
                                     CurrentTime: currentTime.dateFormat(),
