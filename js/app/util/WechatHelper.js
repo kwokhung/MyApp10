@@ -101,6 +101,11 @@ define([
 
                         break;
 
+                    case "link":
+                        this.handleLink(req, res);
+
+                        break;
+
                     case "event":
                         this.handleEvent(req, res);
 
@@ -305,6 +310,54 @@ define([
                                     Location_Y: req.body.xml.Location_Y[0],
                                     Scale: req.body.xml.Scale[0],
                                     Label: req.body.xml.Label[0],
+                                    RawData: util.inspect(req.body, false, null)
+                                }) +
+                        "]]>" +
+                    "</Content>" +
+                "</xml>");
+        },
+        handleLink: function (req, res) {
+            var currentDate = new Date();
+            var currentTime = currentDate.getTime();
+            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
+
+            var hkDate = currentDate;
+            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
+
+            res.send(
+                "<xml>" +
+                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
+                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
+                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
+                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
+                    "<Content>" +
+                        "<![CDATA[" +
+                            string.substitute(
+                                "\n" +
+                                "Current Time: ${CurrentTime}\n\n" +
+                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                                "HK Time: ${HkTime}\n\n" +
+                                "Message Id: ${MsgId}\n\n" +
+                                "Message type: ${MsgType}\n\n" +
+                                "Create Time: ${CreateTime}\n\n" +
+                                "From User: ${FromUserName}\n\n" +
+                                "To User: ${ToUserName}\n\n" +
+                                "Url: ${Url}\n\n" +
+                                "Title: ${Title}\n\n" +
+                                "Description: ${Description}\n\n" +
+                                "Raw Data: ${RawData}",
+                                {
+                                    CurrentTime: currentTime.dateFormat(),
+                                    CurrentTimeZone: currentTimeZone,
+                                    HkTime: hkDate.getTime().dateFormat(),
+                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                                    MsgType: req.body.xml.MsgType[0],
+                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                                    FromUserName: req.body.xml.FromUserName[0],
+                                    ToUserName: req.body.xml.ToUserName[0],
+                                    Url: req.body.xml.Url[0],
+                                    Title: req.body.xml.Title[0],
+                                    Description: req.body.xml.Description[0],
                                     RawData: util.inspect(req.body, false, null)
                                 }) +
                         "]]>" +
