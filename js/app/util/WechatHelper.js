@@ -135,7 +135,7 @@ define([
                                 "To User: ${ToUserName}\n\n" +
                                 "Content: ${Content}\n\n" +
                                 "Profile 1: <a href='${Profile1}'>Link</a>\n\n" +
-                                //"Profile 2: weixin://profile/gh_bf4a62d67399\n\n" +
+                                "Profile 2: <a href='${Profile2}'>Link</a>\n\n" +
                                 "Raw Data: ${RawData}",
                                 {
                                     CurrentTime: currentTime.dateFormat(),
@@ -148,6 +148,7 @@ define([
                                     ToUserName: req.body.xml.ToUserName[0],
                                     Content: req.body.xml.Content[0],
                                     Profile1: "http://www.weixin/profile/gh_bf4a62d67399",
+                                    Profile2: "weixin://profile/gh_bf4a62d67399",
                                     RawData: util.inspect(req.body, false, null)
                                 }) +
                         "]]>" +
