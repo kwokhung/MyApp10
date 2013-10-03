@@ -7,6 +7,6 @@
     "connect": "*",
     "express": "*",
     "socket.io": "*",
-    "express.io": "1.x"
+    "express.io": "*"
   }
 }
