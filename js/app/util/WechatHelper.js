@@ -196,11 +196,11 @@
                         MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
                         RawData: util.inspect(req.body, false, null)
                     }),
-                MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
+                MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0])
             }));
         },
         handleVoice: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderVoice({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -230,7 +230,8 @@
                         Format: req.body.xml.Format[0],
                         Recognition: req.body.xml.Recognition[0],
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                MediaId: req.body.xml.MediaId[0]
             }));
         },
         handleVideo: function (now, req, res) {
