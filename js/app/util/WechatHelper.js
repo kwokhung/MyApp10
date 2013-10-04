@@ -83,7 +83,7 @@ define([
                 res.type("xml");
 
                 switch (req.body.xml.MsgType[0].toLowerCase()) {
-                    case "text":
+                    case "texta":
                         this.handleText(now, req, res);
 
                         break;
@@ -364,7 +364,7 @@ define([
             }));
         },
         handleOther: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderArticle({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -404,6 +404,24 @@ define([
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[text]]></MsgType>" +
                     "<Content><![CDATA[${Content}]]></Content>" +
+                "</xml>", data);
+        },
+        renderArticle: function (data) {
+            return string.substitute(
+                "<xml>" +
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[news]]></MsgType>" +
+                    "<ArticleCount>1</ArticleCount>" +
+                    "<Articles>" +
+                    "<item>" +
+                    "<Title><![CDATA[Apple]]></Title>" +
+                    "<Description><![CDATA[To see an apple in a dream is a favorable sign. Red apples in green leave lead to good luck and prosperity. Ripe apples on a tree mean that it is the time of living activities. But if you see one apple at the top of a tree, think if your plans are real. Dropped apples on earth symbolize flattery of false friends. A rotten apple is a symbol of useless attempts. If you see rotten and wormy apples, then it leads to failures.]]></Description>" +
+                    "<PicUrl><![CDATA[http://eofdreams.com/data_images/dreams/apple/apple-05.jpg]]></PicUrl>" +
+                    "<Url><![CDATA[http://eofdreams.com/apple.html]]></Url>" +
+                    "</item>" +
+                    "</Articles>" +
                 "</xml>", data);
         }
     });
