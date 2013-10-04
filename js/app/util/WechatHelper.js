@@ -1,12 +1,13 @@
 define([
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/_base/array",
     "dojo/string",
     "dojo/node!util",
     "dojo/node!crypto",
     "dojo/node!connect",
     "dojo/node!xml2js"
-], function (declare, lang, string, util, crypto, connect, xml2js) {
+], function (declare, lang, array, string, util, crypto, connect, xml2js) {
     return declare("app.util.WechatHelper", null, {
         token: null,
         constructor: function (kwArgs) {
@@ -378,7 +379,19 @@ define([
                         CurrentTimeZone: now.timeZone,
                         HkTime: now.hkDate.getTime().dateFormat(),
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                Articles: [{
+                    Title: "Apple",
+                    Description: "To see an apple in a dream is a favorable sign. Red apples in green leave lead to good luck and prosperity. Ripe apples on a tree mean that it is the time of living activities. But if you see one apple at the top of a tree, think if your plans are real. Dropped apples on earth symbolize flattery of false friends. A rotten apple is a symbol of useless attempts. If you see rotten and wormy apples, then it leads to failures.",
+                    PicUrl: "http://eofdreams.com/data_images/dreams/apple/apple-05.jpg",
+                    Url: "http://eofdreams.com/apple.html"
+                }, {
+                    Title: "Bananas",
+                    Description: "If you see the dream with bananas, in reality you should work with colleagues who cause in you negative emotions. To eat the bananas in a dream - to stagnation in affairs. Also additional burdensome duties will fall down you. To trade the bananas - to the unprofitable transaction.",
+                    PicUrl: "http://eofdreams.com/data_images/dreams/bananas/bananas-04.jpg",
+                    Url: "http://eofdreams.com/bananas.html"
+                }
+                ]
             }));
         },
         nowaday: function () {
@@ -407,28 +420,29 @@ define([
                 "</xml>", data);
         },
         renderArticle: function (data) {
-            return string.substitute(
+            var result = string.substitute(
                 "<xml>" +
                     "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
                     "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[news]]></MsgType>" +
-                    "<ArticleCount>2</ArticleCount>" +
-                    "<Articles>" +
+                    "<ArticleCount>" + data.Articles.length + "</ArticleCount>", data);
+
+            array.forEach(data.Articles, function (item, index) {
+                result += string.substitute(
                     "<item>" +
-                    "<Title><![CDATA[Apple]]></Title>" +
-                    "<Description><![CDATA[To see an apple in a dream is a favorable sign. Red apples in green leave lead to good luck and prosperity. Ripe apples on a tree mean that it is the time of living activities. But if you see one apple at the top of a tree, think if your plans are real. Dropped apples on earth symbolize flattery of false friends. A rotten apple is a symbol of useless attempts. If you see rotten and wormy apples, then it leads to failures.]]></Description>" +
-                    "<PicUrl><![CDATA[http://eofdreams.com/data_images/dreams/apple/apple-05.jpg]]></PicUrl>" +
-                    "<Url><![CDATA[http://eofdreams.com/apple.html]]></Url>" +
-                    "</item>" +
-                    "<item>" +
-                    "<Title><![CDATA[Bananas]]></Title>" +
-                    "<Description><![CDATA[If you see the dream with bananas, in reality you should work with colleagues who cause in you negative emotions. To eat the bananas in a dream - to stagnation in affairs. Also additional burdensome duties will fall down you. To trade the bananas - to the unprofitable transaction.]]></Description>" +
-                    "<PicUrl><![CDATA[http://eofdreams.com/data_images/dreams/bananas/bananas-04.jpg]]></PicUrl>" +
-                    "<Url><![CDATA[http://eofdreams.com/bananas.html]]></Url>" +
-                    "</item>" +
+                    "<Title><![CDATA[${Title}]]></Title>" +
+                    "<Description><![CDATA[${Description}]]></Description>" +
+                    "<PicUrl><![CDATA[${PicUrl}]]></PicUrl>" +
+                    "<Url><![CDATA[${Url}]]></Url>" +
+                    "</item>", item);
+            });
+
+            result += string.substitute(
                     "</Articles>" +
                 "</xml>", data);
+
+            return result;
         }
     });
 });
