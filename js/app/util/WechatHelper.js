@@ -426,7 +426,8 @@ define([
                     "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[news]]></MsgType>" +
-                    "<ArticleCount>" + data.Articles.length + "</ArticleCount>", data);
+                    "<ArticleCount>" + data.Articles.length + "</ArticleCount>" +
+                    "<Articles>", data);
 
             array.forEach(data.Articles, function (item, index) {
                 result += string.substitute(
