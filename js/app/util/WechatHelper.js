@@ -167,7 +167,7 @@
             }));
         },
         handleImage: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderImage({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -195,7 +195,8 @@
                         PicUrl: req.body.xml.PicUrl[0],
                         MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
             }));
         },
         handleVoice: function (now, req, res) {
@@ -435,6 +436,43 @@
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[text]]></MsgType>" +
                     "<Content><![CDATA[${Content}]]></Content>" +
+                "</xml>", data);
+        },
+        renderImage: function (data) {
+            return string.substitute(
+                "<xml>" +
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[image]]></MsgType>" +
+                    "<Image>" +
+                    "<MediaId><![CDATA[${MediaId}]]></MediaId>" +
+                    "</Image>" +
+                "</xml>", data);
+        },
+        renderVoice: function (data) {
+            return string.substitute(
+                "<xml>" +
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[voice]]></MsgType>" +
+                    "<Voice>" +
+                    "<MediaId><![CDATA[${MediaId}]]></MediaId>" +
+                    "</Voice>" +
+                "</xml>", data);
+        },
+        renderVideo: function (data) {
+            return string.substitute(
+                "<xml>" +
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[video]]></MsgType>" +
+                    "<Video>" +
+                    "<MediaId><![CDATA[${MediaId}]]></MediaId>" +
+                    "<ThumbMediaId><![CDATA[${ThumbMediaId}]]></ThumbMediaId>" +
+                    "</Video>" +
                 "</xml>", data);
         },
         renderMusic: function (data) {
