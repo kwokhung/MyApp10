@@ -388,7 +388,7 @@ define([
                 }, */{
                     Title: "Bananas",
                     Description: "If you see the dream with bananas, in reality you should work with colleagues who cause in you negative emotions. To eat the bananas in a dream - to stagnation in affairs. Also additional burdensome duties will fall down you. To trade the bananas - to the unprofitable transaction.",
-                    PicUrl: "http://eofdreams.com/data_images/dreams/bananas/bananas-04.jpg",
+                    PicUrl: /*"http://eofdreams.com/data_images/dreams/bananas/bananas-04.jpg"*/"",
                     Url: /*"http://eofdreams.com/bananas.html"*/""
                 }
                 ]
