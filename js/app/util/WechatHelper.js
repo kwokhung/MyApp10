@@ -1,4 +1,4 @@
-define([
+﻿define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/_base/array",
@@ -365,7 +365,7 @@ define([
             }));
         },
         handleOther: function (now, req, res) {
-            res.send(this.renderArticle({
+            res.send(this.renderMusic({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -380,6 +380,10 @@ define([
                         HkTime: now.hkDate.getTime().dateFormat(),
                         RawData: util.inspect(req.body, false, null)
                     }),
+                Title: "最炫民族风",
+                Description: "Song: 最炫民族风",
+                MusicUrl: "http://stream10.qqmusic.qq.com/31432174.mp3",
+                HQMusicUrl: "http://stream10.qqmusic.qq.com/31432174.mp3",
                 Articles: [{
                     Title: "Apple",
                     Description: "To see an apple in a dream is a favorable sign. Red apples in green leave lead to good luck and prosperity. Ripe apples on a tree mean that it is the time of living activities. But if you see one apple at the top of a tree, think if your plans are real. Dropped apples on earth symbolize flattery of false friends. A rotten apple is a symbol of useless attempts. If you see rotten and wormy apples, then it leads to failures.",
@@ -416,6 +420,21 @@ define([
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[text]]></MsgType>" +
                     "<Content><![CDATA[${Content}]]></Content>" +
+                "</xml>", data);
+        },
+        renderMusic: function (data) {
+            return string.substitute(
+                "<xml>" +
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[music]]></MsgType>" +
+                    "<Music>" +
+                    "<Title><![CDATA[${Title}]]></Title>" +
+                    "<Description><![CDATA[${Description}]]></Description>" +
+                    "<MusicUrl><![CDATA[${MusicUrl}]]></MusicUrl>" +
+                    "<HQMusicUrl><![CDATA[${HQMusicUrl}]]></HQMusicUrl>" +
+                    "</Music>" +
                 "</xml>", data);
         },
         renderArticle: function (data) {
