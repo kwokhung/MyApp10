@@ -413,13 +413,19 @@ define([
                     "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
                     "<CreateTime>${CreateTime}</CreateTime>" +
                     "<MsgType><![CDATA[news]]></MsgType>" +
-                    "<ArticleCount>1</ArticleCount>" +
+                    "<ArticleCount>2</ArticleCount>" +
                     "<Articles>" +
                     "<item>" +
                     "<Title><![CDATA[Apple]]></Title>" +
                     "<Description><![CDATA[To see an apple in a dream is a favorable sign. Red apples in green leave lead to good luck and prosperity. Ripe apples on a tree mean that it is the time of living activities. But if you see one apple at the top of a tree, think if your plans are real. Dropped apples on earth symbolize flattery of false friends. A rotten apple is a symbol of useless attempts. If you see rotten and wormy apples, then it leads to failures.]]></Description>" +
                     "<PicUrl><![CDATA[http://eofdreams.com/data_images/dreams/apple/apple-05.jpg]]></PicUrl>" +
                     "<Url><![CDATA[http://eofdreams.com/apple.html]]></Url>" +
+                    "</item>" +
+                    "<item>" +
+                    "<Title><![CDATA[Bananas]]></Title>" +
+                    "<Description><![CDATA[If you see the dream with bananas, in reality you should work with colleagues who cause in you negative emotions. To eat the bananas in a dream - to stagnation in affairs. Also additional burdensome duties will fall down you. To trade the bananas - to the unprofitable transaction.]]></Description>" +
+                    "<PicUrl><![CDATA[http://eofdreams.com/data_images/dreams/bananas/bananas-04.jpg]]></PicUrl>" +
+                    "<Url><![CDATA[http://eofdreams.com/bananas.html]]></Url>" +
                     "</item>" +
                     "</Articles>" +
                 "</xml>", data);
