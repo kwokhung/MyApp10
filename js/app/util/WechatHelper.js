@@ -196,7 +196,7 @@
                         MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
                         RawData: util.inspect(req.body, false, null)
                     }),
-                MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0])
+                MediaId: req.body.xml.MediaId[0]
             }));
         },
         handleVoice: function (now, req, res) {
@@ -235,7 +235,7 @@
             }));
         },
         handleVideo: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderVideo({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -263,7 +263,9 @@
                         MediaId: req.body.xml.MediaId[0],
                         ThumbMediaId: req.body.xml.ThumbMediaId[0],
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                MediaId: req.body.xml.MediaId[0],
+                ThumbMediaId: req.body.xml.ThumbMediaId[0]
             }));
         },
         handleLocation: function (now, req, res) {
