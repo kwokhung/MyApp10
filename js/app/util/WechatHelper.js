@@ -78,46 +78,48 @@ define([
         },
         handlePost: function (req, res) {
             if (this.checkSignature(req) == true) {
+                var now = this.nowaday();
+
                 res.type("xml");
 
                 switch (req.body.xml.MsgType[0].toLowerCase()) {
                     case "text":
-                        this.handleText(req, res);
+                        this.handleText(now, req, res);
 
                         break;
 
                     case "image":
-                        this.handleImage(req, res);
+                        this.handleImage(now, req, res);
 
                         break;
 
                     case "voice":
-                        this.handleVoice(req, res);
+                        this.handleVoice(now, req, res);
 
                         break;
 
                     case "video":
-                        this.handleVideo(req, res);
+                        this.handleVideo(now, req, res);
 
                         break;
 
                     case "location":
-                        this.handleLocation(req, res);
+                        this.handleLocation(now, req, res);
 
                         break;
 
                     case "link":
-                        this.handleLink(req, res);
+                        this.handleLink(now, req, res);
 
                         break;
 
                     case "event":
-                        this.handleEvent(req, res);
+                        this.handleEvent(now, req, res);
 
                         break;
 
                     default:
-                        this.handleOther(req, res);
+                        this.handleOther(now, req, res);
 
                         break;
                 }
@@ -127,339 +129,259 @@ define([
                 res.end("Signature is invalid");
             }
         },
-        handleText: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + req.body.xml.MsgType + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Content: ${Content}\n\n" +
-                                //"Profile 1: <a href=\"${Profile1}\">Link</a>\n\n" +
-                                //"Profile 2: <a href=\"${Profile2}\">Link</a>\n\n" +
-                                "Link: <a href=\"${Link}\">Google</a>\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    Content: req.body.xml.Content[0],
-                                    //Profile1: "http://www.weixin/profile/gh_bf4a62d67399",
-                                    //Profile2: "weixin://profile/gh_bf4a62d67399",
-                                    Link: "http://www.google.com",
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleText: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Content: ${Content}\n\n" +
+                    //"Profile 1: <a href=\"${Profile1}\">Link</a>\n\n" +
+                    //"Profile 2: <a href=\"${Profile2}\">Link</a>\n\n" +
+                    "Link: <a href=\"${Link}\">Google</a>\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        Content: req.body.xml.Content[0],
+                        //Profile1: "http://www.weixin/profile/gh_bf4a62d67399",
+                        //Profile2: "weixin://profile/gh_bf4a62d67399",
+                        Link: "http://www.google.com",
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleImage: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Picture Url: ${PicUrl}\n\n" +
-                                "Media Id: ${MediaId}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    PicUrl: req.body.xml.PicUrl[0],
-                                    MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleImage: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Picture Url: ${PicUrl}\n\n" +
+                    "Media Id: ${MediaId}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        PicUrl: req.body.xml.PicUrl[0],
+                        MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleVoice: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Media Id: ${MediaId}\n\n" +
-                                "Format: ${Format}\n\n" +
-                                "Recognition: ${Recognition}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    MediaId: req.body.xml.MediaId[0],
-                                    Format: req.body.xml.Format[0],
-                                    Recognition: req.body.xml.Recognition[0],
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleVoice: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Media Id: ${MediaId}\n\n" +
+                    "Format: ${Format}\n\n" +
+                    "Recognition: ${Recognition}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        MediaId: req.body.xml.MediaId[0],
+                        Format: req.body.xml.Format[0],
+                        Recognition: req.body.xml.Recognition[0],
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleVideo: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Media Id: ${MediaId}\n\n" +
-                                "ThumbMediaId: ${ThumbMediaId}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    MediaId: req.body.xml.MediaId[0],
-                                    ThumbMediaId: req.body.xml.ThumbMediaId[0],
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleVideo: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Media Id: ${MediaId}\n\n" +
+                    "ThumbMediaId: ${ThumbMediaId}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        MediaId: req.body.xml.MediaId[0],
+                        ThumbMediaId: req.body.xml.ThumbMediaId[0],
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleLocation: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Location X: ${Location_X}\n\n" +
-                                "Location Y: ${Location_Y}\n\n" +
-                                "Scale: ${Scale}\n\n" +
-                                "Label: ${Label}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    Location_X: req.body.xml.Location_X[0],
-                                    Location_Y: req.body.xml.Location_Y[0],
-                                    Scale: req.body.xml.Scale[0],
-                                    Label: req.body.xml.Label[0],
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleLocation: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Location X: ${Location_X}\n\n" +
+                    "Location Y: ${Location_Y}\n\n" +
+                    "Scale: ${Scale}\n\n" +
+                    "Label: ${Label}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        Location_X: req.body.xml.Location_X[0],
+                        Location_Y: req.body.xml.Location_Y[0],
+                        Scale: req.body.xml.Scale[0],
+                        Label: req.body.xml.Label[0],
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleLink: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message Id: ${MsgId}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Url: ${Url}\n\n" +
-                                "Title: ${Title}\n\n" +
-                                "Description: ${Description}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    Url: req.body.xml.Url[0],
-                                    Title: req.body.xml.Title[0],
-                                    Description: req.body.xml.Description[0],
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleLink: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message Id: ${MsgId}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Url: ${Url}\n\n" +
+                    "Title: ${Title}\n\n" +
+                    "Description: ${Description}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        Url: req.body.xml.Url[0],
+                        Title: req.body.xml.Title[0],
+                        Description: req.body.xml.Description[0],
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleEvent: function (req, res) {
-            var currentDate = new Date();
-            var currentTime = currentDate.getTime();
-            var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
-
-            var hkDate = currentDate;
-            hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
-
-            res.send(
-                "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Message type: ${MsgType}\n\n" +
-                                "Create Time: ${CreateTime}\n\n" +
-                                "From User: ${FromUserName}\n\n" +
-                                "To User: ${ToUserName}\n\n" +
-                                "Event: ${Event}\n\n" +
-                                "Event Key: ${EventKey}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    MsgType: req.body.xml.MsgType[0],
-                                    CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                                    FromUserName: req.body.xml.FromUserName[0],
-                                    ToUserName: req.body.xml.ToUserName[0],
-                                    Event: req.body.xml.Event[0],
-                                    EventKey: req.body.xml.EventKey[0],
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+        handleEvent: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Message type: ${MsgType}\n\n" +
+                    "Create Time: ${CreateTime}\n\n" +
+                    "From User: ${FromUserName}\n\n" +
+                    "To User: ${ToUserName}\n\n" +
+                    "Event: ${Event}\n\n" +
+                    "Event Key: ${EventKey}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        MsgType: req.body.xml.MsgType[0],
+                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                        FromUserName: req.body.xml.FromUserName[0],
+                        ToUserName: req.body.xml.ToUserName[0],
+                        Event: req.body.xml.Event[0],
+                        EventKey: req.body.xml.EventKey[0],
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
         },
-        handleOther: function (req, res) {
+        handleOther: function (now, req, res) {
+            res.send(this.renderText({
+                ToUserName: req.body.xml.FromUserName,
+                FromUserName: req.body.xml.ToUserName,
+                CreateTime: Math.round(now.time / 1000),
+                Content: string.substitute(
+                    "\n" +
+                    "Current Time: ${CurrentTime}\n\n" +
+                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                    "HK Time: ${HkTime}\n\n" +
+                    "Raw Data: ${RawData}", {
+                        CurrentTime: now.time.dateFormat(),
+                        CurrentTimeZone: now.timeZone,
+                        HkTime: now.hkDate.getTime().dateFormat(),
+                        RawData: util.inspect(req.body, false, null)
+                    })
+            }));
+        },
+        nowaday: function () {
             var currentDate = new Date();
             var currentTime = currentDate.getTime();
             var currentTimeZone = 0 - currentDate.getTimezoneOffset() / 60;
@@ -467,29 +389,22 @@ define([
             var hkDate = currentDate;
             hkDate.setHours(hkDate.getHours() - currentTimeZone + 8);
 
-            res.send(
+            return {
+                date: currentDate,
+                time: currentTime,
+                timeZone: currentTimeZone,
+                hkDate: hkDate
+            };
+        },
+        renderText: function (data) {
+            return string.substitute(
                 "<xml>" +
-                    "<ToUserName><![CDATA[" + req.body.xml.FromUserName + "]]></ToUserName>" +
-                    "<FromUserName><![CDATA[" + req.body.xml.ToUserName + "]]></FromUserName>" +
-                    "<CreateTime>" + Math.round(currentTime / 1000) + "</CreateTime>" +
-                    "<MsgType><![CDATA[" + "text" + "]]></MsgType>" +
-                    "<Content>" +
-                        "<![CDATA[" +
-                            string.substitute(
-                                "\n" +
-                                "Current Time: ${CurrentTime}\n\n" +
-                                "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                                "HK Time: ${HkTime}\n\n" +
-                                "Raw Data: ${RawData}",
-                                {
-                                    CurrentTime: currentTime.dateFormat(),
-                                    CurrentTimeZone: currentTimeZone,
-                                    HkTime: hkDate.getTime().dateFormat(),
-                                    RawData: util.inspect(req.body, false, null)
-                                }) +
-                        "]]>" +
-                    "</Content>" +
-                "</xml>");
+                    "<ToUserName><![CDATA[${ToUserName}]]></ToUserName>" +
+                    "<FromUserName><![CDATA[${FromUserName}]]></FromUserName>" +
+                    "<CreateTime>${CreateTime}</CreateTime>" +
+                    "<MsgType><![CDATA[text]]></MsgType>" +
+                    "<Content><![CDATA[${Content}]]></Content>" +
+                "</xml>", data);
         }
     });
 });
