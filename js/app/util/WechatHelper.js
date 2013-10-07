@@ -146,8 +146,6 @@
                     "From User: ${FromUserName}\n\n" +
                     "To User: ${ToUserName}\n\n" +
                     "Content: ${Content}\n\n" +
-                    //"Profile 1: <a href=\"${Profile1}\">Link</a>\n\n" +
-                    //"Profile 2: <a href=\"${Profile2}\">Link</a>\n\n" +
                     "Link: <a href=\"${Link}\">Google</a>\n\n" +
                     "Raw Data: ${RawData}", {
                         CurrentTime: now.time.dateFormat(),
@@ -159,8 +157,6 @@
                         FromUserName: req.body.xml.FromUserName[0],
                         ToUserName: req.body.xml.ToUserName[0],
                         Content: req.body.xml.Content[0],
-                        //Profile1: "http://www.weixin/profile/gh_bf4a62d67399",
-                        //Profile2: "weixin://profile/gh_bf4a62d67399",
                         Link: "http://www.google.com",
                         RawData: util.inspect(req.body, false, null)
                     })
@@ -273,35 +269,6 @@
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
-                Content: string.substitute(
-                    "\n" +
-                    "Current Time: ${CurrentTime}\n\n" +
-                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                    "HK Time: ${HkTime}\n\n" +
-                    "Message Id: ${MsgId}\n\n" +
-                    "Message type: ${MsgType}\n\n" +
-                    "Create Time: ${CreateTime}\n\n" +
-                    "From User: ${FromUserName}\n\n" +
-                    "To User: ${ToUserName}\n\n" +
-                    "Location X: ${Location_X}\n\n" +
-                    "Location Y: ${Location_Y}\n\n" +
-                    "Scale: ${Scale}\n\n" +
-                    "Label: ${Label}\n\n" +
-                    "Raw Data: ${RawData}", {
-                        CurrentTime: now.time.dateFormat(),
-                        CurrentTimeZone: now.timeZone,
-                        HkTime: now.hkDate.getTime().dateFormat(),
-                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                        MsgType: req.body.xml.MsgType[0],
-                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                        FromUserName: req.body.xml.FromUserName[0],
-                        ToUserName: req.body.xml.ToUserName[0],
-                        Location_X: req.body.xml.Location_X[0],
-                        Location_Y: req.body.xml.Location_Y[0],
-                        Scale: req.body.xml.Scale[0],
-                        Label: req.body.xml.Label[0],
-                        RawData: util.inspect(req.body, false, null)
-                    }),
                 Articles: [/*{
                     Title: "Location",
                     Description: "",
@@ -406,7 +373,58 @@
                         Title: req.body.xml.Title[0],
                         Description: req.body.xml.Description[0],
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                Articles: [{
+                    Title: "Link",
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Current Time: ${CurrentTime}", { CurrentTime: now.time.dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Current Time Zone: ${CurrentTimeZone}", { CurrentTimeZone: now.timeZone }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("HK Time: ${HkTime}", { HkTime: now.hkDate.getTime().dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Message type: ${MsgType}", { MsgType: req.body.xml.MsgType[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Create Time: ${CreateTime}", { CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("From User: ${FromUserName}", { FromUserName: req.body.xml.FromUserName[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("To User: ${ToUserName}", { ToUserName: req.body.xml.ToUserName[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: util.inspect(req.body, false, null),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }]
             }));
         },
         handleEvent: function (now, req, res) {
