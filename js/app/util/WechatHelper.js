@@ -395,7 +395,7 @@
                     PicUrl: "",
                     Url: ""
                 }, */{
-                    Title: string.substitute("Message Ide: ${MsgId}\na\nb\nnc", { MsgId: req.body.xml.MsgId[0] }),
+                    Title: string.substitute("Message Id\n<br />e: ${MsgId}\na\nb\nnc", { MsgId: req.body.xml.MsgId[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
