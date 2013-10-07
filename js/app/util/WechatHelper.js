@@ -221,7 +221,7 @@
                     PicUrl: "",
                     Url: ""
                 }, {
-                    Title: string.substitute("Picture Url: ${PicUrl}", { req.body.xml.PicUrl[0] }),
+                    Title: string.substitute("Picture Url: ${PicUrl}", { PicUrl: req.body.xml.PicUrl[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
