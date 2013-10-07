@@ -395,12 +395,21 @@
                     PicUrl: "",
                     Url: ""
                 }, */{
-                    Title: string.substitute("Message Id\n<br />e: ${MsgId}\na\nb\nnc", { MsgId: req.body.xml.MsgId[0] }),
+                    Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
                 }, {
-                    Title: string.substitute("Message type: ${MsgType}", { MsgType: req.body.xml.MsgType[0] }),
+                    Title: string.substitute(
+                        "Message type: ${MsgType}\n\n" +
+                        "Create Time: ${CreateTime}\n\n" +
+                        "From User: ${FromUserName}\n\n" +
+                        "To User: ${ToUserName}", {
+                            MsgType: req.body.xml.MsgType[0],
+                            CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                            FromUserName: req.body.xml.FromUserName[0],
+                            ToUserName: req.body.xml.ToUserName[0]
+                        }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
