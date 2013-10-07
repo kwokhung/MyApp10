@@ -177,7 +177,7 @@
             }));
         },
         handleImage: function (now, req, res) {
-            res.send(this.renderArticle({
+            res.send(this.renderImage({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -228,7 +228,7 @@
             }));
         },
         handleVoice: function (now, req, res) {
-            res.send(this.renderArticle({
+            res.send(this.renderVoice({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -284,7 +284,7 @@
             }));
         },
         handleVideo: function (now, req, res) {
-            res.send(this.renderArticle({
+            res.send(this.renderVideo({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
