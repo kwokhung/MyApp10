@@ -131,35 +131,11 @@
             }
         },
         handleText: function (now, req, res) {
-            res.send(this.renderArticle({
+            res.send(this.renderText({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
-                Content: string.substitute(
-                    "\n" +
-                    "Current Time: ${CurrentTime}\n\n" +
-                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                    "HK Time: ${HkTime}\n\n" +
-                    "Message Id: ${MsgId}\n\n" +
-                    "Message type: ${MsgType}\n\n" +
-                    "Create Time: ${CreateTime}\n\n" +
-                    "From User: ${FromUserName}\n\n" +
-                    "To User: ${ToUserName}\n\n" +
-                    "Content: ${Content}\n\n" +
-                    "Link: <a href=\"${Link}\">Google</a>\n\n" +
-                    "Raw Data: ${RawData}", {
-                        CurrentTime: now.time.dateFormat(),
-                        CurrentTimeZone: now.timeZone,
-                        HkTime: now.hkDate.getTime().dateFormat(),
-                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                        MsgType: req.body.xml.MsgType[0],
-                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                        FromUserName: req.body.xml.FromUserName[0],
-                        ToUserName: req.body.xml.ToUserName[0],
-                        Content: req.body.xml.Content[0],
-                        Link: "http://www.google.com",
-                        RawData: util.inspect(req.body, false, null)
-                    }),
+                Content: req.body.xml.Content[0],
                 Articles: [{
                     Title: "Text",
                     Description: "",
