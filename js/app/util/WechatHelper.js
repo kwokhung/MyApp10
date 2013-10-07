@@ -303,12 +303,67 @@
                         RawData: util.inspect(req.body, false, null)
                     }),
                 Articles: [{
+                    Title: "Location",
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
                     Title: string.substitute("Current Time: ${CurrentTime}", { CurrentTime: now.time.dateFormat() }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
                 }, {
                     Title: string.substitute("Current Time Zone: ${CurrentTimeZone}", { CurrentTimeZone: now.timeZone }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("HK Time: ${HkTime}", { HkTime: now.hkDate.getTime().dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Message type: ${MsgType}", { MsgType: req.body.xml.MsgType[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Create Time: ${CreateTime}", { CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("From User: ${FromUserName}", { FromUserName: req.body.xml.FromUserName[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("To User: ${ToUserName}", { ToUserName: req.body.xml.ToUserName[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Location X: ${Location_X}", { Location_X: req.body.xml.Location_X[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Location Y: ${Location_Y}", { Location_Y: req.body.xml.Location_Y[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Scale: ${Scale}", { Scale: req.body.xml.Scale[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Label: ${Label}", { Label: req.body.xml.Label[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
