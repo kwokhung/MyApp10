@@ -86,6 +86,12 @@
                 switch (req.body.xml.MsgType[0].toLowerCase()) {
                     case "text":
                         this.handleText(now, req, res);
+                        req.data = {
+                            who: "Wechat",
+                            what: req.body.xml.Content[0],
+                            when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).dateFormat()
+                        };
+                        req.io.route("tell.other");
 
                         break;
 
