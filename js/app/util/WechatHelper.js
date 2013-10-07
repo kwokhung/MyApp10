@@ -302,7 +302,7 @@
                         Label: req.body.xml.Label[0],
                         RawData: util.inspect(req.body, false, null)
                     }),
-                Articles: [{
+                Articles: [/*{
                     Title: "Location",
                     Description: "",
                     PicUrl: "",
@@ -322,7 +322,7 @@
                     Description: "",
                     PicUrl: "",
                     Url: ""
-                }, {
+                }, */{
                     Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
                     Description: "",
                     PicUrl: "",
