@@ -73,31 +73,31 @@ var main = function () {
         "dojo/_base/lang",
         "dojo/node!util",
         "dojo/node!express.io",
-        "app/util/StoredData",
+        "app/util/ExpressHelper",
+        "app/util/ResourceHelper",
         "app/util/WechatHelper"
-    ], function (lang, util, express, StoredData, WechatHelper) {
-        var storedData = new StoredData({
-            storeLabel: "Resource",
-            storeIdentifier: "who"
+    ], function (lang, util, express, ExpressHelper, ResourceHelper, WechatHelper) {
+        var app = express();
+
+        var expressHelper = new ExpressHelper({
+            app: app
+        });
+
+        var resourceHelper = new ResourceHelper({
+            app: app
         });
 
         var wechatHelper = new WechatHelper({
             token: "LivingStrategy"
         });
 
-        var app = express();
-
         app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
 
         app.use("/wechat", lang.hitch(wechatHelper, wechatHelper.parseBody));
 
-        app.get("/index.html", function (req, res) {
-            res.sendfile("./index.html");
-        });
+        app.get("/index.html", lang.hitch(expressHelper, expressHelper.handleIndex));
 
-        app.get("/process", function (req, res) {
-            res.send(util.inspect(process, { showHidden: false, depth: 2 }));
-        });
+        app.get("/process", lang.hitch(expressHelper, expressHelper.handleProcess));
 
         app.get("/wechat", lang.hitch(wechatHelper, wechatHelper.handleGet));
 
@@ -105,169 +105,23 @@ var main = function () {
 
         app.http().io();
 
-        app.io.configure(function () {
-            app.io.set("transports", [
-                "websocket",
-                "flashsocket",
-                "htmlfile",
-                "xhr-polling",
-                "jsonp-polling"
-            ]);
-        });
+        app.io.configure(lang.hitch(expressHelper, expressHelper.ioConfigure));
 
-        app.io.set("authorization", function (handshakeData, accept) {
-            return accept(null, true);
-        });
+        app.io.set("authorization", lang.hitch(expressHelper, expressHelper.ioSetAuthorization));
 
-        app.io.on("connection", function (socket) {
-            var heartbeat = setInterval(function () {
-                socket.emit("heartbeat", {
-                    when: new Date().yyyyMMddHHmmss()
-                });
-            }, 60000)
+        app.io.on("connection", lang.hitch(expressHelper, expressHelper.ioOnConnection));
 
-            socket.on("disconnect", function () {
-                clearInterval(heartbeat);
-            })
-        });
+        app.io.route("i.am", lang.hitch(resourceHelper, resourceHelper.handleIAm));
 
-        app.io.route("i.am", function (req) {
-            if (storedData.store.get(req.data.whoAmI) != null) {
-                req.io.respond({
-                    status: false,
-                    message: "'(" + req.data.who + ") i.am (" + req.data.whoAmI + ")' not accepted"
-                });
-            }
-            else {
-                req.io.respond({
-                    status: true,
-                    message: "'(" + req.data.who + ") i.am (" + req.data.whoAmI + ")' accepted"
-                });
+        app.io.route("i.am.no.more", lang.hitch(resourceHelper, resourceHelper.handleIAmNoMore));
 
-                storedData.store.put({
-                    "who": req.data.whoAmI,
-                    "when": req.data.when
-                });
+        app.io.route("heartbeat", lang.hitch(resourceHelper, resourceHelper.handleHeartbeat));
 
-                req.io.join(req.data.whoAmI);
+        app.io.route("tell.other", lang.hitch(resourceHelper, resourceHelper.handleTellOther));
 
-                if (storedData.store.get("Resource Monitor") != null) {
-                    app.io.room("Resource Monitor").broadcast("someone.joined", {
-                        who: req.data.whoAmI,
-                        when: req.data.when
-                    });
-                }
+        app.io.route("tell.someone", lang.hitch(resourceHelper, resourceHelper.handleTellSomeone));
 
-                req.io.broadcast("he.is", {
-                    who: req.data.whoAmI,
-                    when: req.data.when
-                });
-
-                req.io.emit("you.are", {
-                    who: req.data.whoAmI,
-                    when: req.data.when
-                });
-            }
-        });
-
-        app.io.route("i.am.no.more", function (req) {
-            if (storedData.store.get(req.data.whoAmI) == null) {
-                req.io.respond({
-                    status: false,
-                    message: "'(" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' not accepted"
-                });
-            }
-            else {
-                req.io.respond({
-                    status: true,
-                    message: "'(" + req.data.who + ") i.am.no.more (" + req.data.whoAmI + ")' accepted"
-                });
-
-                storedData.store.remove(req.data.whoAmI);
-
-                req.io.leave(req.data.whoAmI);
-
-                if (storedData.store.get("Resource Monitor") != null) {
-                    app.io.room("Resource Monitor").broadcast("someone.left", {
-                        who: req.data.whoAmI,
-                        when: req.data.when
-                    });
-                }
-
-                req.io.broadcast("he.is.no.more", {
-                    who: req.data.whoAmI,
-                    when: req.data.when
-                });
-
-                req.io.emit("you.are.no.more", {
-                    who: req.data.whoAmI,
-                    when: req.data.when
-                });
-            }
-        });
-
-        app.io.route("heartbeat", function (req) {
-            req.io.respond({
-                status: true,
-                message: "'(" + req.data.who + ") heartbeat' accepted"
-            });
-
-            if (storedData.store.get(req.data.who) != null) {
-                storedData.store.get(req.data.who).when = req.data.when;
-            }
-
-            if (storedData.store.get("Resource Monitor") != null) {
-                app.io.room("Resource Monitor").broadcast("someone.beat", {
-                    who: req.data.who,
-                    when: req.data.when
-                });
-            }
-        });
-
-        app.io.route("tell.other", function (req) {
-            req.io.respond({
-                status: true,
-                message: "'(" + req.data.who + ") tell.other' accepted"
-            });
-
-            req.io.broadcast("someone.said", {
-                who: req.data.who,
-                what: req.data.what,
-                when: req.data.when
-            });
-        });
-
-        app.io.route("tell.someone", function (req) {
-            if (storedData.store.get(req.data.whom) == null) {
-                req.io.respond({
-                    status: false,
-                    message: "'(" + req.data.who + ") tell.someone (" + req.data.whom + ")' not accepted"
-                });
-            }
-            else {
-                req.io.respond({
-                    status: true,
-                    message: "'(" + req.data.who + ") tell.someone (" + req.data.whom + ")' accepted"
-                });
-
-                app.io.room(req.data.whom).broadcast("someone.said", {
-                    who: req.data.who,
-                    what: req.data.what,
-                    when: req.data.when
-                });
-            }
-        });
-
-        app.io.route("who.are.there", function (req) {
-            req.io.respond({
-                status: true,
-                message: "'(" + req.data.who + ") who.are.there' accepted"
-            });
-
-            req.io.emit("there.are", {
-                who: storedData.store.query({})
-            });
-        });
+        app.io.route("who.are.there", lang.hitch(resourceHelper, resourceHelper.handleWhoAreThere));
 
         app.listen(process.env.PORT || 3000);
         console.log("Listening on port " + (process.env.PORT || 3000));
