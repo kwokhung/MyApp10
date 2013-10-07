@@ -191,7 +191,7 @@
                     Title: string.substitute("Content: ${Content}", { Content: req.body.xml.Content[0] }),
                     Description: "",
                     PicUrl: "",
-                    Url: string.substitute("${GoogleUrl}?q=${Content}", { GoogleUrl: "http://www.google.com", Content: req.body.xml.Content[0] })
+                    Url: string.substitute("${GoogleUrl}/#q=${Content}", { GoogleUrl: "https://www.google.com.hk", Content: req.body.xml.Content[0] })
                 }, {
                     Title: util.inspect(req.body, false, null),
                     Description: "",
