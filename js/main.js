@@ -79,6 +79,8 @@ var main = function () {
     ], function (lang, util, express, ExpressHelper, ResourceHelper, WechatHelper) {
         var app = express();
 
+        app.http().io();
+
         var expressHelper = new ExpressHelper({
             app: app
         });
@@ -102,8 +104,6 @@ var main = function () {
         app.get("/wechat", lang.hitch(wechatHelper, wechatHelper.handleGet));
 
         app.post("/wechat", lang.hitch(wechatHelper, wechatHelper.handlePost));
-
-        app.http().io();
 
         app.io.configure(lang.hitch(expressHelper, expressHelper.ioConfigure));
 
