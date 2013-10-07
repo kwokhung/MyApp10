@@ -84,7 +84,7 @@
                 res.type("xml");
 
                 switch (req.body.xml.MsgType[0].toLowerCase()) {
-                    case "texta":
+                    case "text":
                         this.handleText(now, req, res);
 
                         break;
@@ -159,7 +159,45 @@
                         Content: req.body.xml.Content[0],
                         Link: "http://www.google.com",
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                Articles: [{
+                    Title: "Text",
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute(
+                        "Current Time: ${CurrentTime}\n\n" +
+                        "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                        "HK Time: ${HkTime}\n\n" +
+                        "Message Id: ${MsgId}\n\n" +
+                        "Message type: ${MsgType}\n\n" +
+                        "Create Time: ${CreateTime}\n\n" +
+                        "From User: ${FromUserName}\n\n" +
+                        "To User: ${ToUserName}", {
+                            CurrentTime: now.time.dateFormat(),
+                            CurrentTimeZone: now.timeZone,
+                            HkTime: now.hkDate.getTime().dateFormat(),
+                            MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
+                            MsgType: req.body.xml.MsgType[0],
+                            CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
+                            FromUserName: req.body.xml.FromUserName[0],
+                            ToUserName: req.body.xml.ToUserName[0]
+                        }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Content: ${Content}", { Content: req.body.xml.Content[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: util.inspect(req.body, false, null),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }]
             }));
         },
         handleImage: function (now, req, res) {
@@ -167,31 +205,6 @@
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
-                Content: string.substitute(
-                    "\n" +
-                    "Current Time: ${CurrentTime}\n\n" +
-                    "Current Time Zone: ${CurrentTimeZone}\n\n" +
-                    "HK Time: ${HkTime}\n\n" +
-                    "Message Id: ${MsgId}\n\n" +
-                    "Message type: ${MsgType}\n\n" +
-                    "Create Time: ${CreateTime}\n\n" +
-                    "From User: ${FromUserName}\n\n" +
-                    "To User: ${ToUserName}\n\n" +
-                    "Picture Url: ${PicUrl}\n\n" +
-                    "Media Id: ${MediaId}\n\n" +
-                    "Raw Data: ${RawData}", {
-                        CurrentTime: now.time.dateFormat(),
-                        CurrentTimeZone: now.timeZone,
-                        HkTime: now.hkDate.getTime().dateFormat(),
-                        MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
-                        MsgType: req.body.xml.MsgType[0],
-                        CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
-                        FromUserName: req.body.xml.FromUserName[0],
-                        ToUserName: req.body.xml.ToUserName[0],
-                        PicUrl: req.body.xml.PicUrl[0],
-                        MediaId: (typeof req.body.xml.MediaId == "undefined" ? "" : req.body.xml.MediaId[0]),
-                        RawData: util.inspect(req.body, false, null)
-                    }),
                 MediaId: req.body.xml.MediaId[0],
                 Articles: [{
                     Title: "Image",
