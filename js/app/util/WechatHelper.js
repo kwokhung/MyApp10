@@ -425,7 +425,7 @@
                             CurrentTime: now.time.dateFormat(),
                             CurrentTimeZone: now.timeZone,
                             HkTime: now.hkDate.getTime().dateFormat(),
-                            MsgId: req.body.xml.MsgId[0],
+                            MsgId: (typeof req.body.xml.MsgId == "undefined" ? "" : req.body.xml.MsgId[0]),
                             MsgType: req.body.xml.MsgType[0],
                             CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
                             FromUserName: req.body.xml.FromUserName[0],
