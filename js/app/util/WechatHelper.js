@@ -374,57 +374,30 @@
                         Description: req.body.xml.Description[0],
                         RawData: util.inspect(req.body, false, null)
                     }),
-                Articles: [/*{
+                Articles: [{
                     Title: "Link",
                     Description: "",
                     PicUrl: "",
                     Url: ""
                 }, {
-                    Title: string.substitute("Current Time: ${CurrentTime}", { CurrentTime: now.time.dateFormat() }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
-                    Title: string.substitute("Current Time Zone: ${CurrentTimeZone}", { CurrentTimeZone: now.timeZone }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
-                    Title: string.substitute("HK Time: ${HkTime}", { HkTime: now.hkDate.getTime().dateFormat() }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, */{
-                    Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
                     Title: string.substitute(
+                        "Current Time: ${CurrentTime}\n\n" +
+                        "Current Time Zone: ${CurrentTimeZone}\n\n" +
+                        "HK Time: ${HkTime}\n\n" +
+                        "Message Id: ${MsgId}\n\n" +
                         "Message type: ${MsgType}\n\n" +
                         "Create Time: ${CreateTime}\n\n" +
                         "From User: ${FromUserName}\n\n" +
                         "To User: ${ToUserName}", {
+                            CurrentTime: now.time.dateFormat(),
+                            CurrentTimeZone: now.timeZone,
+                            HkTime: now.hkDate.getTime().dateFormat(),
+                            MsgId: req.body.xml.MsgId[0],
                             MsgType: req.body.xml.MsgType[0],
                             CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat(),
                             FromUserName: req.body.xml.FromUserName[0],
                             ToUserName: req.body.xml.ToUserName[0]
                         }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
-                    Title: string.substitute("Create Time: ${CreateTime}", { CreateTime: (parseInt(req.body.xml.CreateTime[0]) * 1000).dateFormat() }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
-                    Title: string.substitute("From User: ${FromUserName}", { FromUserName: req.body.xml.FromUserName[0] }),
-                    Description: "",
-                    PicUrl: "",
-                    Url: ""
-                }, {
-                    Title: string.substitute("To User: ${ToUserName}", { ToUserName: req.body.xml.ToUserName[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
