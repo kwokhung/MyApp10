@@ -343,7 +343,7 @@
             }));
         },
         handleLink: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderArticle({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
