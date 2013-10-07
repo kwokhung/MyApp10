@@ -374,7 +374,7 @@
                         Description: req.body.xml.Description[0],
                         RawData: util.inspect(req.body, false, null)
                     }),
-                Articles: [{
+                Articles: [/*{
                     Title: "Link",
                     Description: "",
                     PicUrl: "",
@@ -394,7 +394,7 @@
                     Description: "",
                     PicUrl: "",
                     Url: ""
-                }, {
+                }, */{
                     Title: string.substitute("Message Id: ${MsgId}", { MsgId: req.body.xml.MsgId[0] }),
                     Description: "",
                     PicUrl: "",
@@ -416,6 +416,21 @@
                     Url: ""
                 }, {
                     Title: string.substitute("To User: ${ToUserName}", { ToUserName: req.body.xml.ToUserName[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Url: ${Url}", { Url: req.body.xml.Url[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Title: ${Title}", { Title: req.body.xml.Title[0] }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Description: ${Description}", { Description: req.body.xml.Description[0] }),
                     Description: "",
                     PicUrl: "",
                     Url: ""
