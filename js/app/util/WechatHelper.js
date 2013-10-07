@@ -269,7 +269,7 @@
             }));
         },
         handleLocation: function (now, req, res) {
-            res.send(this.renderText({
+            res.send(this.renderArticle({
                 ToUserName: req.body.xml.FromUserName,
                 FromUserName: req.body.xml.ToUserName,
                 CreateTime: Math.round(now.time / 1000),
@@ -301,7 +301,23 @@
                         Scale: req.body.xml.Scale[0],
                         Label: req.body.xml.Label[0],
                         RawData: util.inspect(req.body, false, null)
-                    })
+                    }),
+                Articles: [{
+                    Title: string.substitute("Current Time: ${CurrentTime}", { CurrentTime: now.time.dateFormat() }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: string.substitute("Current Time Zone: ${CurrentTimeZone}", { CurrentTimeZone: now.timeZone }),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }, {
+                    Title: util.inspect(req.body, false, null),
+                    Description: "",
+                    PicUrl: "",
+                    Url: ""
+                }]
             }));
         },
         handleLink: function (now, req, res) {
