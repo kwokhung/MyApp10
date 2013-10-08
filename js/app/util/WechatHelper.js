@@ -83,15 +83,17 @@
 
                 res.type("xml");
 
+                req.data = {
+                    who: req.body.xml.FromUserName[0],
+                    what: util.inspect(req.body, false, null),
+                    when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).yyyyMMddHHmmss()
+                };
+
+                req.io.route("tell.other");
+
                 switch (req.body.xml.MsgType[0].toLowerCase()) {
                     case "text":
                         this.handleText(now, req, res);
-                        req.data = {
-                            who: req.body.xml.FromUserName[0],
-                            what: util.inspect(req.body, false, null),
-                            when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).yyyyMMddHHmmss()
-                        };
-                        req.io.route("tell.other");
 
                         break;
 
