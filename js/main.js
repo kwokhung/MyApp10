@@ -111,19 +111,17 @@ var main = function () {
 
         app.io.on("connection", lang.hitch(expressHelper, expressHelper.ioOnConnection));
 
-        app.io.route("i.am", lang.hitch(resourceHelper, resourceHelper.handleIAm));
-
-        app.io.route("i.am.no.more", lang.hitch(resourceHelper, resourceHelper.handleIAmNoMore));
-
-        app.io.route("heartbeat", lang.hitch(resourceHelper, resourceHelper.handleHeartbeat));
-
-        app.io.route("tell.other", lang.hitch(resourceHelper, resourceHelper.handleTellOther));
-
-        app.io.route("tell.someone", lang.hitch(resourceHelper, resourceHelper.handleTellSomeone));
-
-        app.io.route("who.are.there", lang.hitch(resourceHelper, resourceHelper.handleWhoAreThere));
+        app.io.route("resource", {
+            "i.am": lang.hitch(resourceHelper, resourceHelper.handleIAm),
+            "i.am.no.more": lang.hitch(resourceHelper, resourceHelper.handleIAmNoMore),
+            "heartbeat": lang.hitch(resourceHelper, resourceHelper.handleHeartbeat),
+            "tell.other": lang.hitch(resourceHelper, resourceHelper.handleTellOther),
+            "tell.someone": lang.hitch(resourceHelper, resourceHelper.handleTellSomeone),
+            "who.are.there": lang.hitch(resourceHelper, resourceHelper.handleWhoAreThere)
+        });
 
         app.listen(process.env.PORT || 3000);
+
         console.log("Listening on port " + (process.env.PORT || 3000));
     });
 };
