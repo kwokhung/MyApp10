@@ -15,13 +15,29 @@
             res.send(util.inspect(process, { showHidden: false, depth: 2 }));
         },
         ioConfigure: function () {
-            this.app.io.set("transports", [
-                //"websocket",
-                //"flashsocket",
-                "htmlfile",
-                "xhr-polling",
-                "jsonp-polling"
-            ]);
+            switch (process.env.NODE_ENV) {
+                case "production":
+                    this.app.io.set("transports", [
+                        //"websocket",
+                        //"flashsocket",
+                        "htmlfile",
+                        "xhr-polling",
+                        "jsonp-polling"
+                    ]);
+
+                    break;
+
+                default:
+                    this.app.io.set("transports", [
+                        "websocket",
+                        "flashsocket",
+                        "htmlfile",
+                        "xhr-polling",
+                        "jsonp-polling"
+                    ]);
+
+                    break;
+            }
         },
         ioSetAuthorization: function (handshakeData, accept) {
             return accept(null, true);
