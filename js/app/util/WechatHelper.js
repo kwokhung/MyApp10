@@ -89,7 +89,7 @@
                         req.data = {
                             who: "Wechat",
                             what: req.body.xml.Content[0],
-                            when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).dateFormat()
+                            when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).yyyyMMddHHmmss()
                         };
                         req.io.route("tell.other");
 
