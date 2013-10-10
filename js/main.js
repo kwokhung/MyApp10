@@ -93,9 +93,10 @@ var main = function () {
             token: "LivingStrategy"
         });
 
-        app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
-
-        app.use("/wechat", lang.hitch(wechatHelper, wechatHelper.parseBody));
+        app.configure(function () {
+            app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
+            app.use("/wechat", lang.hitch(wechatHelper, wechatHelper.parseBody));
+        });
 
         app.get("/index.html", lang.hitch(expressHelper, expressHelper.handleIndex));
 
