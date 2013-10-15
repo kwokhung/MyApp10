@@ -132,7 +132,7 @@
                         when: new Date((parseInt(req.body.xml.CreateTime[0]) * 1000)).yyyyMMddHHmmss()
                     };
 
-                    req.io.route("tell.other");
+                    req.io.route("resource:tell.other");
                 }
             }
             else {
