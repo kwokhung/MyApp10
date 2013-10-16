@@ -1,5 +1,6 @@
 dojoConfig = {
-    baseUrl: "js/",
+    //baseUrl: "js/",
+    baseUrl: __dirname + "/",
     async: 1,
     hasCache: {
         "host-node": 1,
