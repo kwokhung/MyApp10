@@ -102,7 +102,11 @@ var main = function () {
 
         app.get("/process", lang.hitch(expressHelper, expressHelper.handleProcess));
 
-        app.get("/dojotest", function (req, res) {
+        app.get("/dojotest01", function (req, res) {
+            res.send(util.inspect(main, { showHidden: false, depth: 2 }));
+        });
+
+        app.get("/dojotest02", function (req, res) {
             res.send(util.inspect(dojoConfig, { showHidden: false, depth: 2 }));
         });
 
