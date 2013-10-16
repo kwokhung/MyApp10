@@ -102,6 +102,10 @@ var main = function () {
 
         app.get("/process", lang.hitch(expressHelper, expressHelper.handleProcess));
 
+        app.get("/dojotest", function (req, res) {
+            res.send(util.inspect(dojoConfig, { showHidden: false, depth: 2 }));
+        });
+
         app.get("/wechat", lang.hitch(wechatHelper, wechatHelper.handleGet));
 
         app.post("/wechat", lang.hitch(wechatHelper, wechatHelper.handlePost));
