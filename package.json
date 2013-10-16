@@ -4,6 +4,7 @@
   "description": "My App 10",
   "dependencies": {
     "xml2js": "*",
+    "crypto": "*",
     "connect": "*",
     "express": "*",
     "socket.io": "*",
