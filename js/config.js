@@ -1,5 +1,7 @@
+var path = require("path");
+
 dojoConfig = {
-    baseUrl: __dirname + "/",
+    baseUrl: __dirname + path.sep,
     async: 1,
     hasCache: {
         "host-node": 1,
@@ -16,6 +18,6 @@ dojoConfig = {
         location: "."
     }],
     deps: [
-        "root/main"
+        //"root/main"
     ]
 };

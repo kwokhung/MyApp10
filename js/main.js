@@ -134,3 +134,8 @@ var main = function () {
         console.log("Listening on port " + (process.env.PORT || 3000));
     });
 };
+
+define([
+], function () {
+    return main;
+});
