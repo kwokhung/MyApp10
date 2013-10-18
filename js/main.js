@@ -68,15 +68,15 @@ Number.prototype.dateFormat = function () {
     (ss < 10 ? "0" + ss : ss);
 };
 
-var main = function () {
-    require([
-        "dojo/_base/lang",
-        "dojo/node!util",
-        "dojo/node!express.io",
-        "app/util/ExpressHelper",
-        "app/util/ResourceHelper",
-        "app/util/WechatHelper"
-    ], function (lang, util, express, ExpressHelper, ResourceHelper, WechatHelper) {
+define([
+    "dojo/_base/lang",
+    "dojo/node!util",
+    "dojo/node!express.io",
+    "app/util/ExpressHelper",
+    "app/util/ResourceHelper",
+    "app/util/WechatHelper"
+], function (lang, util, express, ExpressHelper, ResourceHelper, WechatHelper) {
+    return function () {
         var app = express();
 
         app.http().io();
@@ -132,10 +132,5 @@ var main = function () {
         app.listen(process.env.PORT || 3000);
 
         console.log("Listening on port " + (process.env.PORT || 3000));
-    });
-};
-
-define([
-], function () {
-    return main;
+    };
 });

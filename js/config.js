@@ -16,8 +16,5 @@ dojoConfig = {
     }, {
         name: "root",
         location: "."
-    }],
-    deps: [
-        //"root/main"
-    ]
+    }]
 };
