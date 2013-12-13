@@ -94,8 +94,14 @@ define([
         });
 
         app.configure(function () {
-            app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
+            app.use(express.logger());
             app.use("/wechat", lang.hitch(wechatHelper, wechatHelper.parseBody));
+            app.use(app.router);
+            app.use("/www", express.static("C:\\Projects\\MyApp16\\platforms\\android\\assets\\www"));
+            app.use(express.errorHandler({
+                dumpExceptions: true,
+                showStack: true
+            }));
         });
 
         app.get("/index.html", lang.hitch(expressHelper, expressHelper.handleIndex));
